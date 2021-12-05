@@ -57,3 +57,31 @@ class Book(database.Model):
     genre = database.Column(database.String(256))
     image = database.Column(database.String(256))
 
+class Author_Book(database.Model):
+    author_id = database.Column(database.String(256), database.ForeignKey('author.author_id'), primary_key = True)
+    book_id = database.Column(database.String(256), database.ForeignKey('book.book_id'), primary_key = True)
+
+class Professor_Book(database.Model):
+    prof_id = database.Column(database.String(256), database.ForeignKey('professor.prof_id'), primary_key = True)
+    book_id = database.Column(database.String(256), database.ForeignKey('book.book_id'), primary_key = True)
+
+class Book_Professor_Course(database.Model):
+    prof_id = database.Column(database.String(256), database.ForeignKey('professor.prof_id'), primary_key = True)
+    book_id = database.Column(database.String(256), database.ForeignKey('book.book_id'), primary_key = True)
+    course_id = database.Column(database.String(256), database.ForeignKey('course.course_id'), primary_key = True)
+
+class Assigned_Professor_Course(database.Model):
+    prof_id = database.Column(database.String(256), database.ForeignKey('professor.prof_id'), primary_key = True)
+    sch_id = database.Column(database.String(256), database.ForeignKey('school__administrator.sch_id'), primary_key = True)
+    course_id = database.Column(database.String(256), database.ForeignKey('course.course_id'), primary_key = True)
+
+class Student_Course(database.Model):
+    stud_id = database.Column(database.String(256), database.ForeignKey('student.stud_id'), primary_key = True)
+    course_id = database.Column(database.String(256), database.ForeignKey('course.course_id'), primary_key = True)
+
+class Book_Course(database.Model):
+    book_id = database.Column(database.String(256), database.ForeignKey('book.book_id'), primary_key = True)
+    course_id = database.Column(database.String(256), database.ForeignKey('course.course_id'), primary_key = True)
+
+
+

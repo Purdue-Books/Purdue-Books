@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Professor, User, Student, Author, School_Administrator
+from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -73,7 +73,10 @@ def create_book():
         genre = request.form.get("genre")
         image = request.form.get("fileToUpload")
         new_book = Book(book_id=book_id, title=title, published_year=published_year, summary=summary, genre=genre, image=image)
+        author_book = Author_Book(author_id=current_user.get_id(), book_id=book_id)
         database.session.add(new_book)
+        database.session.commit()
+        database.session.add(author_book)
         database.session.commit()
         return render_template('authorHome.html')
     return render_template('authorBookCreation.html')
@@ -82,7 +85,7 @@ def create_book():
 def create_course():
     if request.method == 'POST':
         course_id = uuid.uuid1()
-        
+
         
         return render_template('administratorProfile.html')
     return render_template('administratorCourseCreation.html')
