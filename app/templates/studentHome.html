@@ -1,62 +1,66 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Home</title>
-	    <link rel="stylesheet" href="../css/global.css" />
-	    <link rel="stylesheet" href="../css/studentClasses.css" />
-	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
-        <script src="../js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
-    </head>
-     <!--- Student Header HTML Code --->
-  <nav>
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="../static/css/global.css" />
+    <link rel="stylesheet" href="../static/css/studentClasses.css" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
+    <script src="../static/js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
+</head>
+<!--- Student Header HTML Code --->
+<nav>
     <div>
         <h2>STUDENT</h2>
     </div>
-        <ul>
+    <ul>
         <li>
             <a href="studentHome.html">
-            <div>HOME</div>
+                <div>HOME</div>
             </a>
         </li>
         <li>
             <a href="studentClasses.html">
-            <div>CLASSES</div>
+                <div>CLASSES</div>
             </a>
         </li>
         <li>
             <a href="studentProfile.html">
-            <div>SETTINGS</div>
+                <div>SETTINGS</div>
             </a>
         </li>
         <li>
-            <a href="php/session_php/session_destroy.php">
-            <div>LOGOUT</div>
+            <a href="index.html">
+                <div>LOGOUT</div>
             </a>
         </li>
-        </ul>
+    </ul>
 </nav>
-    <body>
-        <section>
-            <!-- Job Search Bar with JavaScript -->
-            <h4>Classes</h4>
-            <!-- refereshPage() the mySearch function runs based on the specific events-->
-            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Classes" />
-        </section>
-        <section>
-            <div class='cardContainer generic'>
-                        <a class='cardLink generic' href='jobInformation.php?id={$remaining_id}'>
-                            <div class='card'>
-                                <div class='cardInfo'>
-                                    <h1>Professor Names</h1>
-                                    <h3>Class Name</h3>                         
-                                    <h4>Semester</h4>
-                                </div>
-                            </div>
-                        </a>
-            </div>
-        </section>
-        <!-- Shows the Page Numbers -->
-	    <div id="pagination-container-generic" class = 'bottom_Section'></div> 
-    </body>
+
+<body>
+    <section>
+        <!-- Job Search Bar with JavaScript -->
+        <h4>Classes</h4>
+        <!-- refereshPage() the mySearch function runs based on the specific events-->
+        <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()"
+            placeholder="Search Classes" />
+    </section>
+    <section>
+        <div class='cardContainer generic'>
+            <a class='cardLink generic' href='jobInformation.php?id={$remaining_id}'>
+                <div class='card'>
+                    <div class='cardInfo'>
+                        <h1>Professor Names</h1>
+                        <h3>Class Name</h3>
+                        <h4>Semester</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+    <!-- Shows the Page Numbers -->
+    <div id="pagination-container-generic" class='bottom_Section'></div>
+</body>
+
 </html>
