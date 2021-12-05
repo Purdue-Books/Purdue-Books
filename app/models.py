@@ -56,3 +56,4 @@ class Book(database.Model):
     summary = database.Column(database.String(256))
     genre = database.Column(database.String(256))
     image = database.Column(database.String(256))
+

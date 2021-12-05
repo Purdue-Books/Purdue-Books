@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Professor, User, Student, Author, School_Administrator, Book
+from .models import Professor, User, Student, Author, School_Administrator
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -57,6 +57,9 @@ def get_book(name):
     return books
 
 
+
+
+
 views = Blueprint('views', __name__)
 
 
@@ -78,15 +81,32 @@ def create_book():
 @views.route('/administratorCourseCreation.html', methods=['POST', 'GET'])
 def create_course():
     if request.method == 'POST':
-        # book_id
-        course_id = request.form.get("course_id")
-        # title
-        # published_year
-        # summary
-        # genre
-        # image
+        course_id = uuid.uuid1()
+        
+        
         return render_template('administratorProfile.html')
     return render_template('administratorCourseCreation.html')
+
+@views.route('/administratorBooks.html', methods=['POST', 'GET'])
+def administrator_books():
+    return render_template('administratorBooks.html')
+
+
+@views.route('/administratorBookProfile.html', methods=['POST', 'GET'])
+def administrator_book_profile():
+    return render_template('administratorBookProfile.html')
+
+@views.route('/authorBookProfile.html', methods=['POST', 'GET'])
+def author_book_profile():
+    return render_template('authorBookProfile.html')
+
+@views.route('/professorBookProfile.html', methods=['POST', 'GET'])
+def professor_book_profile():
+    return render_template('professorBookProfile.html')
+
+@views.route('/professorBooks.html', methods=['POST', 'GET'])
+def professor_books():
+    return render_template('professorBooks.html')
 
 
 @views.route('/result.html', methods=['POST', 'GET'])
