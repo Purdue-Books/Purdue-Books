@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Administrator Home</title>
-	    <link rel="stylesheet" href="../css/global.css" />
-	    <link rel="stylesheet" href="../css/professorHome.css" />
+        <title>Home</title>
+	    <link rel="stylesheet" href="../static/css/global.css" />
+	    <link rel="stylesheet" href="../static/css/professorHome.css" />
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
-        <script src="../js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
+        <script src="../static/js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
     </head>
      <!--- Professor Header HTML Code --->
      <nav>
@@ -17,11 +17,6 @@
                 <li>
                     <a href="administratorHome.html">
                     <div>HOME</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="administratorBooks.html">
-                    <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
@@ -46,38 +41,16 @@
         <section>
 
             <div class='cardContainer generic'>
-                <button class="submit"><a href="administratorCourseCreation.html">Create New Course</a></button>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
+                <button class="submit"><a href="authorBookCreation.html">Create New Course</a></button>
+                <a class='cardLink generic' href='jobInformation.php?id={$remaining_id}'>
                     <div class='card'>
                         <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
+                            <h1>Professor Names</h1>
+                            <h3>Class Name</h3>                         
+                            <h4>Semester</h4>
                         </div>
                     </div>
                 </a>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
-                    <div class='card'>
-                        <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
-                        </div>
-                    </div>
-                </a>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
-                    <div class='card'>
-                        <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
-                        </div>
-                    </div>
-                </a>
-
             </div>
         </section>
         <!-- Shows the Page Numbers -->

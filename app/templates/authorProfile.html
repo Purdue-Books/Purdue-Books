@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Author Profile</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/authorProfile.css" />
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/authorProfile.css" />
     </head>
     <!--- Author Header HTML Code --->
   <nav>
@@ -31,7 +31,8 @@
     <body>
           <section>
             <h2>Profile</h2>
-            <form name="myForm" action="php/student_php/studentDetails.php" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="blank" id="blank" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="myForm" id="myForm" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
             <div class="sectionOne">
                 <!-- File Upload -->
                 <input type="file" name="fileToUpload" id="fileToUpload" required/>

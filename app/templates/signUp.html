@@ -3,8 +3,8 @@
 
 <head>
   <title>Sign Up</title>
-  <link rel="stylesheet" href="../css/global.css" />
-  <link rel="stylesheet" href="../css/signUp.css" />
+  <link rel="stylesheet" href="../static/css/global.css" />
+  <link rel="stylesheet" href="../static/css/signUp.css" />
   <script src="../js/global.js"></script>
   <script src="../js/signUp.js"></script>
 </head>
@@ -13,27 +13,27 @@
   <div>
     <section>
       <h2>Sign Up</h2>
-      <form name="myForm" id="myForm" action="php/signup_php/signupDetails.php" onsubmit="return validateForm()" method="POST">
+      <form name="myForm" id="myForm" onsubmit="return validateForm()" method="POST">
         <!-- Calls the signupDetails.php -->
-        <input type="text" name="username" placeholder="Username" required/> <!-- Email -->
-        <input type="password" name="pwd" placeholder="Password" required/> <!-- Password -->
+        <input type="text" name="username" placeholder="Username" required /> <!-- Email -->
+        <input type="password" name="pwd" placeholder="Password" required /> <!-- Password -->
         <div class="options">
           <!-- Options for Student or Employer or Purdue IE -->
-          <input type="radio" name="role_type" id="box-1" value="student"/>
+          <input type="radio" name="role_type" id="box-1" value="student" />
           <label for="box-1">Student</label>
-          <input type="radio" name="role_type" id="box-2" value="professor"/>
+          <input type="radio" name="role_type" id="box-2" value="professor" />
           <label for="box-2">Professor</label>
-          <input type="radio" name="role_type" id="box-3" value="author"/>
+          <input type="radio" name="role_type" id="box-3" value="author" />
           <label for="box-3">Author</label>
-          <input type="radio" name="role_type" id="box-4" value="author"/>
+          <input type="radio" name="role_type" id="box-4" value="admin" />
           <label for="box-4">Administrator</label>
         </div>
       </form>
       <div class="buttongroup">
-          <!-- Submit Button -->
-          <button class="login"><a href="index.html">Go Back</a></button>
-          <button type="submit" form="myForm" name="submit">Submit</button> <!-- Submit -->
-        </div>
+        <!-- Submit Button -->
+        <button class="login"><a href="index.html">Go Back</a></button>
+        <button type="submit" form="myForm" name="submit">Submit</button> <!-- Submit -->
+      </div>
     </section>
   </div>
 </body>
