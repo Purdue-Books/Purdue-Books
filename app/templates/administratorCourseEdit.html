@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Administrator Course Creation</title>
+        <link rel="stylesheet" href="../css/global.css" />
+        <link rel="stylesheet" href="../css/administratorCourseCreation.css" />
+    </head>
+    <!--- Administrator Header HTML Code --->
+  <nav>
+    <div>
+        <h2>ADMINISTRATOR</h2>
+    </div>
+        <ul>
+            <li>
+                <a href="administratorHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="administratorBooks.html">
+                <div>BOOKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="administratorProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
+</nav>
+    <body>
+          <section>
+            <h2>Course</h2>
+            <form name="myForm" action="" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <div class="sectionOne">
+                <!-- Course Name -->
+                <input id="name" type="text" name="name" placeholder="Name" value="" />
+                <!-- Semester -->
+                <div class="select">
+                   <select type="text" name="Semester" id="semester">
+                        <option selected disabled>Semester</option>
+                        <option value="Fall">Fall</option>
+                        <option value="Spring">Spring</option>
+                        <option value="Summer">Summer</option>
+                    </select>
+                </div>
+                <!-- Year -->
+                <div class="select">
+                    <select type="text" name="Year" id="Year">
+                         <option selected disabled>Year</option>
+                         <option value="2019">2019</option>
+                         <option value="2020">2020</option>
+                         <option value="2021">2021</option>
+                     </select>
+                 </div> 
+                <!-- Course Summary -->
+				<textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
+            </div>
+            <div class="sectionThree">
+                <button type="submit" name="submit" class="submit">Submit</button>
+              </div>
+            </form>
+          </section>
+      </body>
+</html>
