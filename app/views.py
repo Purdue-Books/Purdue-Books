@@ -21,6 +21,7 @@ db_cursor = db_connection.cursor(buffered=True)
 db_cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
 db_cursor.execute("USE Purdue_Books")
 
+
 def book_table(data):
     if data == None:
         return ""
@@ -30,7 +31,8 @@ def book_table(data):
         table = table + "<tr>\n"
         table = table + "<td>" + str(data[i][0]) + "</td>"
         table = table + "<td>" + str(data[i][1]) + "</td>"
-        table = table + "<td>" + "<img src ='" + str(data[i][2]) + "' width=60 height=40>" + "</td>"
+        table = table + "<td>" + "<img src ='" + \
+            str(data[i][2]) + "' width=60 height=40>" + "</td>"
         table = table + "<td>" + str(data[i][3]) + "</td>"
         table = table + "<td>" + str(data[i][4]) + "</td>"
         table = table + "<td>" + str(data[i][5]) + "</td>"
@@ -38,6 +40,7 @@ def book_table(data):
         table = table + "</tr>\n"
     table = table + "</table>"
     return table
+
 
 def get_book(name):
     get_book_name_sql = "SELECT * FROM mytable WHERE name LIKE "
@@ -52,7 +55,23 @@ def get_book(name):
              "author_url": book[4], "book_id": book[5], "summary": str(book[6])[0:50]})
     return books
 
+
 views = Blueprint('views', __name__)
+
+
+@views.route('/authorBookCreation.html', methods=['POST', 'GET'])
+def create_book():
+    if request.method == 'POST':
+        # book_id
+        book_id = request.form.get("book_id")
+        # title
+        # published_year
+        # summary
+        # genre
+        # image
+        return render_template('authorProfile.html')
+    return render_template('authorBookCreation.html')
+
 
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
@@ -60,9 +79,10 @@ def search():
         res = request.form['re']
         result = get_book(res)
         print("result is : " + str(result))
-        return render_template('results.html',Data=result)
+        return render_template('results.html', Data=result)
     else:
         return render_template('search.html')
+
 
 @views.route('/administratorHome.html')
 @login_required

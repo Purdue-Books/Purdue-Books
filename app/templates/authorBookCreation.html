@@ -2,60 +2,64 @@
 <html>
 
 <head>
-	<title>Book Creation</title>
-	<link rel="stylesheet" href="../static/css/global.css" />
-	<link rel="stylesheet" href="../static/css/authorBookCreation.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="../js/global.js"></script>
-	<script src="../js/authorBookCreation.js"></script>
+    <title>Book Creation</title>
+    <link rel="stylesheet" href="../static/css/global.css" />
+    <link rel="stylesheet" href="../static/css/authorBookCreation.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../js/global.js"></script>
+    <script src="../js/authorBookCreation.js"></script>
 </head>
- <!--- Author Header HTML Code --->
- <nav>
+<!--- Author Header HTML Code --->
+<nav>
     <div>
         <h2>AUTHOR</h2>
     </div>
-        <ul>
-            <li>
-                <a href="authorHome.html">
+    <ul>
+        <li>
+            <a href="authorHome.html">
                 <div>HOME</div>
-                </a>
-            </li>
-            <li>
-                <a href="authorProfile.html">
+            </a>
+        </li>
+        <li>
+            <a href="authorProfile.html">
                 <div>SETTINGS</div>
-                </a>
-            </li>
-            <li>
-                <a href="index.html">
+            </a>
+        </li>
+        <li>
+            <a href="index.html">
                 <div>LOGOUT</div>
-                </a>
-            </li>
-        </ul>
+            </a>
+        </li>
+    </ul>
 </nav>
-<body>
-	<section>
-		<!-- Profile -->
-		<h2>Book</h2>
-		<form name="myForm" action="" onsubmit="return validateForm()" method="POST">
-			<div class="sectionOne">
-				<!-- Image -->
-                <input type="file" name="fileToUpload" id="fileToUpload" required/>
 
-				<!-- Title -->
+<body>
+    <section>
+        <!-- Profile -->
+        <h2>Book</h2>
+        <form name="myForm" action="" onsubmit="return validateForm()" method="POST">
+            <div class="sectionOne">
+                <!-- Image -->
+                <input type="file" name="fileToUpload" id="fileToUpload" required />
+
+                <!-- Title -->
                 <input type="text" name="job_name" placeholder="Title" value="" required />
 
                 <!-- Published Year -->
                 <input type="text" name="job_name" placeholder="Published Year" value="" required />
 
+                <!-- Genre -->
+                <input type="text" name="job_name" placeholder="Genre" value="" required />
+
                 <!-- Summary -->
-				<textarea rows="4" cols="50" type="text" name="job_desc" placeholder="Summary" required></textarea>
+                <textarea rows="4" cols="50" type="text" name="job_desc" placeholder="Summary" required></textarea>
 
-				<!-- Button -->
-				<button type="submit" name="submit" class="submit">Submit</button>
-			</div>
-		</form>
+                <!-- Button -->
+                <button type="submit" name="submit" class="submit">Submit</button>
+            </div>
+        </form>
 
-	</section>
+    </section>
 </body>
 
 </html>
