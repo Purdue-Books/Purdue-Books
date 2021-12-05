@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Professor Add/Remove Books</title>
+        <link rel="stylesheet" href="../css/global.css" />
+        <link rel="stylesheet" href="../css/professorAddRemoveBooks.css" />
+    </head>
+    <!--- Professor Header HTML Code --->
+  <nav>
+    <div>
+        <h2>PROFESSOR</h2>
+    </div>
+        <ul>
+            <li>
+                <a href="professorHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="professorBooks.html">
+                <div>BOOKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="professorProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
+</nav>
+    <body>
+          <section>
+            <h2>Course Name's Books</h2>
+            <form name="myForm" action="" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <div class="sectionOne">
+                <h4>Add Books</h4>
+                <div class="select">
+                    <select size="10" type="text" name="addBooks" id="addBooks">
+                        <option selected disabled>Add Books Here</option>
+                        <option value="test">Professor Names</option>
+                        <option value="test1">test placeholder</option>
+                    </select>
+                </div>
+
+                <h4>Remove Books</h4>
+                <div class="select">
+                    <select size="10" type="text" name="removeBooks" id="removeBooks" multiple>
+                        <option selected disabled>Remove Books Here</option>
+                        <option value="test">Professor Names</option>
+                        <option value="test1">test placeholder</option>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="sectionThree">
+                <button type="submit" name="submit" class="submit">Submit</button>
+              </div>
+            </form>
+          </section>
+      </body>
+</html>

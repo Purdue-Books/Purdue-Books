@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Book Profile</title>
+        <link rel="stylesheet" href="../css/global.css" />
+        <link rel="stylesheet" href="../css/authorBookProfile.css" />
+        <script src="../js/myTabs.js" defer></script>
+    </head>
+    <!--- Author Header HTML Code --->
+  <nav>
+    <div>
+        <h2>AUTHOR</h2>
+    </div>
+        <ul>
+            <li>
+                <a href="authorHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="authorProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
+</nav>
+    <body>
+        <section>
+            <!-- Title Section -->
+            <div class="Title">
+                <div class="leftSide">
+                    <!-- Image and Title on the Left Side -->
+                    <img src="../img/sample.jpg" class="Book Logo" />
+                    <div class="titles">
+                        <h1 style="margin-top: 0;">BOOK NAME HERE</h1>
+                        <div>
+                            <h4 style="margin: 0;">INFORMATION HERE</h4>
+                            <h4 style="margin: 0;">INFORMATION HERE</h4>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href='authorBookCreation.html'><button type="submit" name="edit" class="edit">Edit</button></a> <!-- Applied Button on the Right Side -->
+                    <button type="submit" name="delete" class="delete">Delete</button> <!-- Applied Button on the Right Side -->
+                </div>
+            </div>
+            <!-- Header Section -->
+            <div class="Sections">
+                <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
+                <rating>ADD STAR RATING HERE</rating>
+            </div>
+            <div>
+                <div class="content">
+                    <!-- DESCRIPTION -->
+                    <div id="DESCRIPTION" data-tab-content class="active">
+                        <div class="descriptionInfo">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                Pellentesque bibendum, magna id sagittis commodo, erat leo consequat nisl,
+                                sit amet lobortis est dolor vitae lectus. Donec posuere mi eu odio fringilla tincidunt. 
+                                Sed sollicitudin odio id tristique faucibus. Aenean quis dolor vulputate, imperdiet purus eget, ornare metus. 
+                                Curabitur iaculis nisi urna, nec consequat dui volutpat in. Pellentesque eget erat turpis. Suspendisse sodales 
+                                diam eu nisi tempus, eget lobortis lorem bibendum. Cras sed blandit lectus. Donec ut tincidunt mi, et dignissim magna.
+                            </p>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </section>
+      </body>
+</html>
