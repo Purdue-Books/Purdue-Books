@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Professor, User, Student, Author, School_Administrator
+from .models import Professor, User, Student, Author, School_Administrator, Book
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 import mysql.connector as connector
 from . import db
+import uuid
 
 db_connection = None
 db_cursor = None
@@ -62,14 +63,16 @@ views = Blueprint('views', __name__)
 @views.route('/authorBookCreation.html', methods=['POST', 'GET'])
 def create_book():
     if request.method == 'POST':
-        # book_id
-        book_id = request.form.get("book_id")
-        # title
-        # published_year
-        # summary
-        # genre
-        # image
-        return render_template('authorProfile.html')
+        book_id = uuid.uuid1()
+        title = request.form.get("title")
+        published_year = request.form.get("published_year")
+        summary = request.form.get("summary")
+        genre = request.form.get("genre")
+        image = request.form.get("fileToUpload")
+        new_book = Book(book_id=book_id, title=title, published_year=published_year, summary=summary, genre=genre, image=image)
+        database.session.add(new_book)
+        database.session.commit()
+        return render_template('authorHome.html')
     return render_template('authorBookCreation.html')
 
 
