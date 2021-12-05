@@ -1,0 +1,128 @@
+/*CSS for the studentProfile page*/
+section {
+  display: flex;
+  flex-direction: column;
+}
+.sectionOne {
+  display: flex;
+  flex-direction: column;
+}
+.sectionTwo {
+  display: flex;
+  flex-direction: row;
+}
+.sectionTwo div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.sectionThree {
+ display: flex;
+ flex-direction: row;
+}
+
+.sectionThree div {
+ flex: 1;
+ display: flex;
+ flex-direction: column;
+}
+
+.sectionFour { /*Doesn't work*/
+  display: flex;
+  flex-direction: row;
+}
+
+.sectionFour div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+ }
+
+
+/* Reset Select */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  background: #fff;
+  background-image: none;
+  flex: 1;
+  padding: 8px 5px;
+  cursor: pointer;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select */
+.select {
+  display: flex;
+  background: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+input, select{
+  margin: 2px;
+  border: 2px solid #eee;
+  border-radius: 4px;
+  max-width: 100%;
+  font-size: 20px;
+  font-weight: 400;
+}
+input {
+
+  padding: 10px 5px;
+}
+
+.submit {
+  border: none;
+  background-color: #0070f3;
+  max-width: 100%;
+
+  font-size: 20px;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+button {
+  border: none;
+  background-color: #0070f3;
+  flex: 1;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+button a {
+  color: #fff;
+  text-decoration: none;
+}
+button a:hover{
+    color: #fff !important;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+textarea {
+  margin: 2px;
+  max-width: 100%;
+  font-size: 20px;
+  font-weight: 400;
+  padding: 10px 5px;
+  border: 2px solid #eee;
+  color: #000;
+  border-radius: 4px;
+  font-family: "Inter", sans-serif;
+}
