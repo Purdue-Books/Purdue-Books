@@ -72,6 +72,19 @@ def create_book():
         return render_template('authorProfile.html')
     return render_template('authorBookCreation.html')
 
+@views.route('/administratorCourseCreation.html', methods=['POST', 'GET'])
+def create_course():
+    if request.method == 'POST':
+        # book_id
+        course_id = request.form.get("course_id")
+        # title
+        # published_year
+        # summary
+        # genre
+        # image
+        return render_template('administratorProfile.html')
+    return render_template('administratorCourseCreation.html')
+
 
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
