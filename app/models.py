@@ -56,3 +56,7 @@ class Book(database.Model):
     summary = database.Column(database.String(256))
     genre = database.Column(database.String(256))
     image = database.Column(database.String(256))
+
+class Author_Book(database.Model):
+    author_id = database.Column(database.String(256), database.ForeignKey('author.author_id'), primary_key = True)
+    book_id = database.Column(database.String(256), database.ForeignKey('book.book_id'), primary_key = True)
