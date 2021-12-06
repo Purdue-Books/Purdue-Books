@@ -8,6 +8,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 import mysql.connector as connector
 from . import db
 import uuid
+import base64
 
 db_connection = None
 db_cursor = None
@@ -65,8 +66,19 @@ def get_book_by_author(author_id):
     db_cursor.execute(get_book_by_author_sql)
     books = []
     for book in db_cursor.fetchall():
+        result = get_book_by_id(book[0])
+        image = Image.query.filter_by(image_id=result[0].get('image')).first()
         books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
-                     "summary": book[3], "genre": book[4], "image": book[5], "author_id": book[6]})
+                     "summary": book[3], "genre": book[4], "image": image, "author_id": book[6]})
+    return books
+
+def get_book_by_id(book_id):
+    get_book_by_id_sql = "SELECT * FROM book b WHERE b.book_id = \"" + book_id + "\";"
+    db_cursor.execute(get_book_by_id_sql)
+    books = []
+    for book in db_cursor.fetchall():
+        books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
+                     "summary": book[3], "genre": book[4], "image": book[5]})
     return books
 
 
@@ -94,19 +106,14 @@ def create_book():
         file = request.files["fileToUpload"]
         filename = secure_filename(file.filename)
         mimetype = file.mimetype
-        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
         database.session.add(image)
         database.session.commit()
 
         result = get_book_by_author(author_id=current_user.get_id())
         return render_template('authorHome.html', Data=result)
     return render_template('authorBookCreation.html')
-
-@views.route('/<string:id>')
-def get_image(id):
-    image = Image.query.filter_by(image_id=id).first()
-    return Response(image.image, mimetype=image.mimetype)
-
+    
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
     if request.method == 'POST':
@@ -130,6 +137,12 @@ def author_home():
     result = get_book_by_author(author_id=current_user.get_id())
     return render_template('authorHome.html', Data=result)
 
+@views.route('/authorBookProfile.html/<string:id>')
+@login_required
+def author_book_profile(id):
+    result = get_book_by_id(book_id=id)
+    image = Image.query.filter_by(image_id=result[0].get('image')).first()
+    return render_template('/authorBookProfile.html', Data=result, Image=image)
 
 @views.route('/professorHome.html')
 @login_required

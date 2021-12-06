@@ -45,11 +45,11 @@
         <div class='cardContainer generic'>
             <button class="submit"><a href="authorBookCreation.html">Create New Book</a></button>
             {% for item in Data %}
-            <a class='cardLink generic' href='authorBookProfile.html'>
+            <a class='cardLink generic' href='authorBookProfile.html/{{ item.book_id }}'>
                 <div class='card'>
                     <div class='cardInfo'>
                         <div id='information' class='middle_part'>
-                            <img src='{{ item.image }}' alt='Book Cover' />
+                            <img src='data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Book Cover' />
                         </div>
                     </div>
                     <h1>{{ item.title }}</h1>
