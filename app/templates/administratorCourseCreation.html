@@ -40,6 +40,10 @@
             <div class="sectionOne">
                 <!-- Course Name -->
                 <input id="name" type="text" name="name" placeholder="Name" value="" />
+                <!-- Course Summary -->
+				<textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
+                <!-- subject -->
+                <input id="subject" type="text" name="subject" placeholder="Subject" value="" />
                 <!-- Semester -->
                 <div class="select">
                    <select type="text" name="Semester" id="semester">
@@ -58,16 +62,6 @@
                          <option value="2021">2021</option>
                      </select>
                  </div> 
-                <!-- Course Summary -->
-				<textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
-                <!-- List of Professors-->
-                <div class="select">
-                    <select type="text" name="Professor" id="Professor">
-                        <option selected disabled>Professor</option>
-                        <option value="test">Professor Names</option>
-                        <option value="test1">test placeholder</option>
-                    </select>
-                </div>
             </div>
             <div class="sectionThree">
                 <button type="submit" name="submit" class="submit">Submit</button>

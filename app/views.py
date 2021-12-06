@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book
+from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Assigned_Professor_Course
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -85,8 +85,14 @@ def create_book():
 def create_course():
     if request.method == 'POST':
         course_id = uuid.uuid1()
-
-        
+        name = request.form.get("name")
+        summary = request.form.get("summary")
+        subject = request.form.get("subject")
+        semester = request.form.get("semester")
+        year = request.form.get("year")
+        new_course = Course(course_id=course_id, name=name, summary=summary, subject=subject, semester=semester, year=year)
+        database.session.add(new_course)
+        database.session.commit()
         return render_template('administratorProfile.html')
     return render_template('administratorCourseCreation.html')
 
