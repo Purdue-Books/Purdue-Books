@@ -60,16 +60,15 @@ def get_book(name):
     return books
 
 
-def get_book_by_author(author_id):
+def get_books_by_author(author_id):
     get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
         author_id + "\" = ab.author_id AND ab.book_id = b.book_id;"
     db_cursor.execute(get_book_by_author_sql)
     books = []
     for book in db_cursor.fetchall():
         result = get_book_by_id(book[0])
-        image = Image.query.filter_by(image_id=result[0].get('image')).first()
         books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
-                     "summary": book[3], "genre": book[4], "image": image, "author_id": book[6]})
+                     "summary": book[3], "genre": book[4], "image": result[0].get('image'), "author_id": book[6]})
     return books
 
 def get_book_by_id(book_id):
@@ -77,8 +76,9 @@ def get_book_by_id(book_id):
     db_cursor.execute(get_book_by_id_sql)
     books = []
     for book in db_cursor.fetchall():
+        image = Image.query.filter_by(image_id=book[5]).first()
         books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
-                     "summary": book[3], "genre": book[4], "image": book[5]})
+                     "summary": book[3], "genre": book[4], "image": image})
     return books
 
 
@@ -110,10 +110,30 @@ def create_book():
         database.session.add(image)
         database.session.commit()
 
-        result = get_book_by_author(author_id=current_user.get_id())
+        result = get_books_by_author(author_id=current_user.get_id())
         return render_template('authorHome.html', Data=result)
     return render_template('authorBookCreation.html')
-    
+
+@views.route('/authorBookEdit.html/<string:id>', methods=['POST', 'GET'])
+@login_required
+def edit_book(id):
+    if request.method == 'POST':
+        result = get_book_by_id(id)
+        title = request.form.get("title")
+        published_year = request.form.get("published_year")
+        summary = request.form.get("summary")
+        genre = request.form.get("genre")
+        book = Book.query.filter_by(book_id=result[0].get('book_id')).first()
+        book.title = title
+        book.published_year = published_year
+        book.summary = summary
+        book.genre = genre
+        database.session.commit() 
+        database.session.flush()
+        return author_book_profile(id)
+    result = get_book_by_id(id)
+    return render_template('authorBookEdit.html', Book=result[0])
+
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
     if request.method == 'POST':
@@ -134,15 +154,14 @@ def admin_home():
 @views.route('/authorHome.html')
 @login_required
 def author_home():
-    result = get_book_by_author(author_id=current_user.get_id())
+    result = get_books_by_author(author_id=current_user.get_id())
     return render_template('authorHome.html', Data=result)
 
 @views.route('/authorBookProfile.html/<string:id>')
 @login_required
 def author_book_profile(id):
     result = get_book_by_id(book_id=id)
-    image = Image.query.filter_by(image_id=result[0].get('image')).first()
-    return render_template('/authorBookProfile.html', Data=result, Image=image)
+    return render_template('/authorBookProfile.html', Data=result)
 
 @views.route('/professorHome.html')
 @login_required

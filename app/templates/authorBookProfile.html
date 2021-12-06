@@ -14,17 +14,17 @@
     </div>
     <ul>
         <li>
-            <a href="authorHome.html">
+            <a href="/authorHome.html">
                 <div>HOME</div>
             </a>
         </li>
         <li>
-            <a href="authorProfile.html">
+            <a href="/authorProfile.html">
                 <div>SETTINGS</div>
             </a>
         </li>
         <li>
-            <a href="index.html">
+            <a href="/index.html">
                 <div>LOGOUT</div>
             </a>
         </li>
@@ -38,17 +38,17 @@
         <div class="Title">
             <div class="leftSide">
                 <!-- Image and Title on the Left Side -->
-                <img src="data:{{ Image.mimetype }};base64,{{ Image.image.decode() }}" class="Book Logo" />
+                <img src="data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}" class="Book Logo" />
                 <div class="titles">
                     <h1 style="margin-top: 0;">{{ item.title }}</h1>
                     <div>
-                        <h4 style="margin: 0;">INFORMATION HERE</h4>
-                        <h4 style="margin: 0;">INFORMATION HERE</h4>
+                        <h4 style="margin: 0;">{{ item.published_year }}</h4>
+                        <h4 style="margin: 0;">{{ item.genre }}</h4>
                     </div>
                 </div>
             </div>
             <div>
-                <a href='authorBookCreation.html'><button type="submit" name="edit" class="edit">Edit</button></a>
+                <a href='/authorBookEdit.html/{{ item.book_id }}'><button type="submit" name="edit" class="edit">Edit</button></a>
                 <!-- Applied Button on the Right Side -->
                 <button type="submit" name="delete" class="delete">Delete</button>
                 <!-- Applied Button on the Right Side -->
@@ -65,15 +65,7 @@
                 <div id="DESCRIPTION" data-tab-content class="active">
                     <div class="descriptionInfo">
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Pellentesque bibendum, magna id sagittis commodo, erat leo consequat nisl,
-                            sit amet lobortis est dolor vitae lectus. Donec posuere mi eu odio fringilla tincidunt.
-                            Sed sollicitudin odio id tristique faucibus. Aenean quis dolor vulputate, imperdiet purus
-                            eget, ornare metus.
-                            Curabitur iaculis nisi urna, nec consequat dui volutpat in. Pellentesque eget erat turpis.
-                            Suspendisse sodales
-                            diam eu nisi tempus, eget lobortis lorem bibendum. Cras sed blandit lectus. Donec ut
-                            tincidunt mi, et dignissim magna.
+                            {{ item.summary }}
                         </p>
                     </div>
                 </div>

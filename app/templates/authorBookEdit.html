@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Book</title>
+    <link rel="stylesheet" href="../static/css/global.css" />
+    <link rel="stylesheet" href="../static/css/authorBookCreation.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../js/global.js"></script>
+    <script src="../js/authorBookCreation.js"></script>
+</head>
+<!--- Author Header HTML Code --->
+<nav>
+    <div>
+        <h2>AUTHOR</h2>
+    </div>
+    <ul>
+        <li>
+            <a href="authorHome.html">
+                <div>HOME</div>
+            </a>
+        </li>
+        <li>
+            <a href="authorProfile.html">
+                <div>SETTINGS</div>
+            </a>
+        </li>
+        <li>
+            <a href="index.html">
+                <div>LOGOUT</div>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<body>
+    <section>
+        <!-- Profile -->
+        <h2>Book</h2>
+        <form name="myForm" action="" onsubmit="return validateForm()" enctype="multipart/form-data" method="POST">
+            <div class="sectionOne">
+                <!-- Image -->
+                <input type="file" name="fileToUpload" id="fileToUpload" />
+
+                <!-- Title -->
+                <input type="text" name="title" placeholder="Title" value="{{ Book.title }}" required />
+
+                <!-- Published Year -->
+                <input type="text" name="published_year" placeholder="Published Year" value="{{ Book.published_year }}" required />
+
+                <!-- Genre -->
+                <select type="text" name="genre" id="genre">
+                    <option selected="selected">{{ Book.genre }}</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Science">Science</option>
+                    <option value="Dystopian">Dystopian</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Humor">Humor</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Autobiography">Autobiography</option>
+                </select>
+
+                <!-- Summary -->
+                <textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required>{{ Book.summary }}</textarea>
+
+                <!-- Button -->
+                <button type="submit" name="submit" class="submit">Submit</button>
+            </div>
+        </form>
+
+    </section>
+</body>
+
+</html>
