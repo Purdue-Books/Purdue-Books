@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask.wrappers import Response
-from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book, Image
+from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Book_Course, Image
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -133,6 +133,18 @@ def edit_book(id):
         return author_book_profile(id)
     result = get_book_by_id(id)
     return render_template('authorBookEdit.html', Book=result[0])
+
+@views.route('/delete/<string:id>', methods=['POST', 'GET'])
+@login_required
+def delete_book(id):
+    Book_Course.query.filter_by(book_id=id).delete()
+    Book_Professor_Course.query.filter_by(book_id=id).delete()
+    Professor_Book.query.filter_by(book_id=id).delete()
+    Author_Book.query.filter_by(book_id=id).delete()
+    Book.query.filter_by(book_id=id).delete()
+    database.session.commit()
+    database.session.flush()
+    return redirect(url_for('views.author_home'))
 
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
