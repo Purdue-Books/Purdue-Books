@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book
+from flask.wrappers import Response
+from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book, Image
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import login_user, login_required, logout_user, current_user
 import mysql.connector as connector
 from . import db
@@ -57,9 +59,20 @@ def get_book(name):
     return books
 
 
+def get_book_by_author(author_id):
+    get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
+        author_id + "\" = ab.author_id AND ab.book_id = b.book_id;"
+    db_cursor.execute(get_book_by_author_sql)
+    books = []
+    for book in db_cursor.fetchall():
+        books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
+                     "summary": book[3], "genre": book[4], "image": book[5], "author_id": book[6]})
+    return books
+
+
 views = Blueprint('views', __name__)
 
-
+@login_required
 @views.route('/authorBookCreation.html', methods=['POST', 'GET'])
 def create_book():
     if request.method == 'POST':
@@ -68,16 +81,31 @@ def create_book():
         published_year = request.form.get("published_year")
         summary = request.form.get("summary")
         genre = request.form.get("genre")
-        image = request.form.get("fileToUpload")
-        new_book = Book(book_id=book_id, title=title, published_year=published_year, summary=summary, genre=genre, image=image)
-        author_book = Author_Book(author_id=current_user.get_id(), book_id=book_id)
+        image_id = uuid.uuid1();
+        new_book = Book(book_id=book_id, title=title, published_year=published_year,
+                        summary=summary, genre=genre, image=image_id)
+        author_book = Author_Book(
+            author_id=current_user.get_id(), book_id=book_id)
         database.session.add(new_book)
         database.session.commit()
         database.session.add(author_book)
         database.session.commit()
-        return render_template('authorHome.html')
+
+        file = request.files["fileToUpload"]
+        filename = secure_filename(file.filename)
+        mimetype = file.mimetype
+        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        database.session.add(image)
+        database.session.commit()
+
+        result = get_book_by_author(author_id=current_user.get_id())
+        return render_template('authorHome.html', Data=result)
     return render_template('authorBookCreation.html')
 
+@views.route('/<string:id>')
+def get_image(id):
+    image = Image.query.filter_by(image_id=id).first()
+    return Response(image.image, mimetype=image.mimetype)
 
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
@@ -99,7 +127,8 @@ def admin_home():
 @views.route('/authorHome.html')
 @login_required
 def author_home():
-    return render_template('authorHome.html')
+    result = get_book_by_author(author_id=current_user.get_id())
+    return render_template('authorHome.html', Data=result)
 
 
 @views.route('/professorHome.html')
@@ -141,12 +170,20 @@ def author_profile():
         lastname = request.form.get('lastname')
         biography = request.form.get('biography')
         email = request.form.get('email')
-        image = request.form.get('fileToUpload')
+        image_id = uuid.uuid1();
 
         new_auth = Author(author_id=prof_id, first_name=firstname,
-                          last_name=lastname, biography=biography, email=email, image=image)
+                          last_name=lastname, biography=biography, email=email, image=image_id)
         database.session.add(new_auth)
         database.session.commit()
+
+        file = request.files["fileToUpload"]
+        filename = secure_filename(file.filename)
+        mimetype = file.mimetype
+        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        database.session.add(image)
+        database.session.commit()
+
         return redirect(url_for('views.author_home'))
 
     return render_template('authorProfile.html')
@@ -161,12 +198,20 @@ def professor_profile():
         lastname = request.form.get('lastname')
         biography = request.form.get('biography')
         email = request.form.get('email')
-        image = request.form.get('fileToUpload')
+        image_id = uuid.uuid1();
 
         new_prof = Professor(prof_id=prof_id, first_name=firstname,
-                             last_name=lastname, biography=biography, email=email, image=image)
+                             last_name=lastname, biography=biography, email=email, image=image_id)
         database.session.add(new_prof)
         database.session.commit()
+
+        file = request.files['fileToUpload']
+        filename = secure_filename(file.filename)
+        mimetype = file.mimetype
+        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        database.session.add(image)
+        database.session.commit()
+
         return redirect(url_for('views.professor_home'))
 
     return render_template('professorProfile.html')
