@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Student Home</title>
+        <title>Find Professors</title>
 	    <link rel="stylesheet" href="../css/global.css" />
-	    <link rel="stylesheet" href="../css/studentHome.css" />
+	    <link rel="stylesheet" href="../css/studentProfessors.css" />
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
         <script src="../js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
@@ -44,9 +44,9 @@
     <body>
         <section>
             <!-- Top Rated Page with Search Bar with JavaScript -->
-            <h4>Classes</h4>
+            <h4>Professors</h4>
             <!-- refereshPage() the mySearch function runs based on the specific events-->
-            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Classes" />
+            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Professors" />
         </section>
         <section>
             <div class = "layoutCriteria">
@@ -72,6 +72,26 @@
                         </select>
                     </div>
 
+                    <div class="sectionChoice">
+                        <div class ="sectionTitle">Semester</div>
+                        <div class="choices">
+                            <div class="select">
+                                <input type="checkbox" id="Fall" name="Fall" value="Fall">
+                                <label for="Fall">Fall</label>
+                            </div>
+                            <div class="select">
+                                <input type="checkbox" id="Spring" name="Spring" value="Spring">
+                                <label for="Spring">Spring</label>
+                            </div>
+                            <div class="select">
+                                <input type="checkbox" id="Winter" name="Winter" value="Winter">
+                                <label for="Winter">Winter</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
                     <div class = "criteriaButton">
                         <button type="submit" form="searchCriteria" name="submit">Submit</button>
                     </div>
@@ -79,27 +99,57 @@
                 
                 <div class='cardContainer generic'>
                     
-                    <a class='cardLink generic' href='studentClassesPage.html'>
+                    <a class='cardLink generic' href='studentProfessorProfile.html'>
                         <div class='card'>
+                            <div class='cardImage'>
+                                <div id = 'information' class = 'middle_part'>
+                                        <img src= '../img/sample.jpg' alt='Professor' />
+                                </div>
+                            </div>
                             <div class='cardInfo'>
-                                <h1>Class Names</h1>
-                                <h3>Professor Name</h3>                         
-                                <h4>Semester</h4>
+                                <h1>Professors Name</h1>
                             </div>
                         </div>
                     </a>
 
-                    <a class='cardLink generic' href='studentClassesPage.html'>
+                    <a class='cardLink generic' href='studentProfessorProfile.html'>
                         <div class='card'>
+                            <div class='cardImage'>
+                                <div id = 'information' class = 'middle_part'>
+                                        <img src= '../img/sample.jpg' alt='Professor' />
+                                </div>
+                            </div>
                             <div class='cardInfo'>
-                                <h1>Class Names</h1>
-                                <h3>Professor Name</h3>                         
-                                <h4>Semester</h4>
+                                <h1>Professors Name</h1>
                             </div>
                         </div>
                     </a>
 
-                
+                    <a class='cardLink generic' href='studentProfessorProfile.html'>
+                        <div class='card'>
+                            <div class='cardImage'>
+                                <div id = 'information' class = 'middle_part'>
+                                        <img src= '../img/sample.jpg' alt='Professor' />
+                                </div>
+                            </div>
+                            <div class='cardInfo'>
+                                <h1>Professors Name</h1>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a class='cardLink generic' href='studentProfessorProfile.html'>
+                        <div class='card'>
+                            <div class='cardImage'>
+                                <div id = 'information' class = 'middle_part'>
+                                        <img src= '../img/sample.jpg' alt='Professor' />
+                                </div>
+                            </div>
+                            <div class='cardInfo'>
+                                <h1>Professors Name</h1>
+                            </div>
+                        </div>
+                    </a>
                     
                 </div>
             </div>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Student Class Information</title>
+        <link rel="stylesheet" href="../css/global.css" />
+        <link rel="stylesheet" href="../css/studentClassesPage.css" />
+        <script src="../js/myTabs.js" defer></script>
+    </head>
+    <!--- Header HTML Code --->
+    <nav>
+        <div>
+            <h2>STUDENT</h2>
+        </div>
+            <ul>
+                <li>
+                    <a href="studentHome.html">
+                    <div>HOME</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="studentBookmarks.html">
+                    <div>BOOKMARKS</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="studentProfessors.html">
+                    <div>PROFESSORS</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="studentProfile.html">
+                    <div>SETTINGS</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                    <div>LOGOUT</div>
+                    </a>
+                </li>
+            </ul>
+    </nav>
+    <body>
+        <section>
+            <!-- Student Title Section -->
+            <div class="infoTitle">
+                <div class="leftSide">
+                    <!-- Job Image and Job Title on the Left Side -->
+                    <img src="../img/sample.jpg" class="Company Logo" />
+                    <div class="titles">
+                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <div>
+                            <h4 style="margin: 0;">Professor Name</h4>
+                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Student Header Section -->
+            <div class="infoSections">
+                <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
+                <a data-tab-target="#PROFESSOR" class="tab">PROFESSOR</a>
+                <a data-tab-target="#BOOKS" class="tab">BOOKS</a>
+            </div>
+            <div>
+                <div class="content">
+                    <!-- Description Information -->
+                    <div id="DESCRIPTION" data-tab-content class="active">
+                        <div class="descriptionInfo">
+                            <h3>Description</h3>
+                            <p>
+                                Description of the Course!
+                            </p>
+                        </div>
+                    </div>
+                    <!--  Section -->
+                    <div id="PROFESSOR" data-tab-content>
+                        <div class="professorInfo">
+                            <h3>Professor</h3>
+                            <p>
+                                Description of the Professor!
+                            </p>
+                        </div>
+                    </div>
+                    <!--  Section -->
+                    <div id="BOOKS" data-tab-content>
+                        <div class="bookList">
+                            <h3>Books</h3>
+                            <div class="cardContainer accepted">
+                                
+                                <a class='cardLink generic' href='studentBookProfile.html'>
+                                    <div class='card'>
+                                        <div class='cardInfo'>
+                                            <div id = 'information' class = 'middle_part'>
+                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                            </div>
+                                        </div>
+                                        <div class='cardInfo'>
+                                            <h1>Book Name</h1>
+                                            <h3>Author Name</h3>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <a class='cardLink generic' href='studentBookProfile.html'>
+                                    <div class='card'>
+                                        <div class='cardInfo'>
+                                            <div id = 'information' class = 'middle_part'>
+                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                            </div>
+                                        </div>
+                                        <div class='cardInfo'>
+                                            <h1>Book Name</h1>
+                                            <h3>Author Name</h3>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+      </body>
+</html>
