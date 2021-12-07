@@ -13,28 +13,29 @@
         </div>
             <ul>
                 <li>
-                    <a href="administratorHome.html">
+                    <a href="/administratorHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="administratorBooks.html">
+                    <a href="/administratorBooks.html">
                     <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="administratorProfile.html">
+                    <a href="/administratorProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
             </ul>
     </nav>
     <body>
+        {% for item in Data %}
         <section>
             <!-- Student Title Section -->
             <div class="infoTitle">
@@ -42,16 +43,16 @@
                     <!-- Job Image and Job Title on the Left Side -->
                     <img src="../img/sample.jpg" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <h1 style="margin-top: 0;">{{ item.course_name }}</h1>
                         <div>
-                            <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                            <h4 style="margin: 0;">{{ item.prof_name }}</h4>
+                            <h4 style="margin: 0;">{{ item.course_semester }} {{ item.course_year }}</h4>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <a href='administratorCourseEdit.html'><button type="submit" name="edit" class="edit">Edit</button></a> <!-- Applied Button on the Right Side -->
-                    <button type="submit" name="delete" class="delete">Delete</button> <!-- Applied Button on the Right Side -->
+                    <a href='/administratorCourseEdit.html/{{ item.course_id }}'><button type="submit" name="edit" class="edit">Edit</button></a> <!-- Applied Button on the Right Side -->
+                    <a href="/deleteCourse/{{ item.course_id }}"><button type="submit" name="delete" class="delete">Delete</button></a>
                 </div>
             </div>
             <!-- Student Header Section -->
@@ -67,8 +68,8 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Description of the Course!</br>
-                                Professor Name
+                                {{ item.course_summary }}!</br>
+                                {{ item.prof_name }}
                             </p>
                         </div>
                     </div>
@@ -125,5 +126,6 @@
                 </div>
             </div>
         </section>
+        {% endfor %}
       </body>
 </html>

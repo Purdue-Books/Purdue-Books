@@ -12,22 +12,22 @@
     </div>
         <ul>
             <li>
-                <a href="administratorHome.html">
+                <a href="/administratorHome.html">
                 <div>HOME</div>
                 </a>
             </li>
             <li>
-                <a href="administratorBooks.html">
+                <a href="/administratorBooks.html">
                 <div>BOOKS</div>
                 </a>
             </li>
             <li>
-                <a href="administratorProfile.html">
+                <a href="/administratorProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
             <li>
-                <a href="index.html">
+                <a href="/index.html">
                 <div>LOGOUT</div>
                 </a>
             </li>
@@ -36,7 +36,8 @@
     <body>
           <section>
             <h2>Profile</h2>
-            <form name="myForm" action="php/student_php/studentDetails.php" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="blank" id="blank" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="myForm" id="myForm" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
             <div class="sectionOne">
                 <!-- File Upload -->
                 <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />

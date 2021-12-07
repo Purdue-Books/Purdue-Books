@@ -15,22 +15,22 @@
         </div>
             <ul>
                 <li>
-                    <a href="administratorHome.html">
+                    <a href="/administratorHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="administratorBooks.html">
+                    <a href="/administratorBooks.html">
                     <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="administratorProfile.html">
+                    <a href="/administratorProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
@@ -47,37 +47,17 @@
 
             <div class='cardContainer generic'>
                 <button class="submit"><a href="administratorCourseCreation.html">Create New Course</a></button>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
+                {% for item in Data %}
+                <a class='cardLink generic' href='administratorCourse.html/{{ item.course_id }}'>     
                     <div class='card'>
-                        <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
+                        <div class='cardInfo'>                  
+                            <h1 style= "margin-bottom: -5px">{{ item.prof_name }}</h1>
+                            <h3>{{ item.course_name }}</h3>          
+                            <h4 style= "margin-top: -5px">{{ item.course_semester }} {{ item.course_year }}</h4>                      
                         </div>
-                    </div>
+                    </div>    
                 </a>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
-                    <div class='card'>
-                        <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
-                        </div>
-                    </div>
-                </a>
-
-                <a class='cardLink generic' href='administratorCourse.html'>
-                    <div class='card'>
-                        <div class='cardInfo'>
-                            <h1 style= "margin-bottom: -5px">Professor Names</h1>
-                            <h3>Class Name</h3>          
-                            <h4 style= "margin-top: -5px">Semester</h4>
-                        </div>
-                    </div>
-                </a>
-
+                {% endfor %}
             </div>
         </section>
         <!-- Shows the Page Numbers -->

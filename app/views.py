@@ -205,7 +205,7 @@ def create_course():
             course = get_course_by_id(course_id=professor_course['course_id'])
             professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
             "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
-        return render_template('administratorHome.html', Data=professors_courses_info)
+        return render_template('/administratorHome.html', Data=professors_courses_info)
         #return render_template('administratorHome.html')
     professors = get_professors();   
     return render_template('administratorCourseCreation.html', Data=professors)
@@ -225,7 +225,7 @@ def administrator_course(id):
         course = get_course_by_id(course_id=professor_course['course_id'])
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
          "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year']})  
-    return render_template('administratorCourse.html', Data=professors_courses_info)
+    return render_template('/administratorCourse.html', Data=professors_courses_info)
 
 @views.route('/administratorBookProfile.html', methods=['POST', 'GET'])
 def administrator_book_profile():
@@ -259,6 +259,19 @@ def edit_book(id):
     result = get_book_by_id(id)
     return render_template('authorBookEdit.html', Book=result[0])
 
+
+@views.route('/deleteBook/<string:id>', methods=['POST', 'GET'])
+@login_required
+def delete_book(id):
+    Book_Course.query.filter_by(book_id=id).delete()
+    Book_Professor_Course.query.filter_by(book_id=id).delete()
+    Professor_Book.query.filter_by(book_id=id).delete()
+    Author_Book.query.filter_by(book_id=id).delete()
+    Book.query.filter_by(book_id=id).delete()
+    database.session.commit()
+    database.session.flush()
+    return redirect(url_for('views.author_home'))
+
 @views.route('/administratorCourseEdit.html/<string:id>', methods=['POST', 'GET'])
 @login_required
 def edit_course(id):
@@ -290,18 +303,6 @@ def edit_course(id):
     prof_id = request.form.get("professor")
     selected_prof = get_professor_by_id(str(prof_id))
     return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof)
-
-@views.route('/deleteBook/<string:id>', methods=['POST', 'GET'])
-@login_required
-def delete_book(id):
-    Book_Course.query.filter_by(book_id=id).delete()
-    Book_Professor_Course.query.filter_by(book_id=id).delete()
-    Professor_Book.query.filter_by(book_id=id).delete()
-    Author_Book.query.filter_by(book_id=id).delete()
-    Book.query.filter_by(book_id=id).delete()
-    database.session.commit()
-    database.session.flush()
-    return redirect(url_for('views.author_home'))
 
 @views.route('/deleteCourse/<string:id>', methods=['POST', 'GET'])
 @login_required
@@ -337,7 +338,7 @@ def admin_home():
         course = get_course_by_id(course_id=professor_course['course_id'])
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
         "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
-    return render_template('administratorHome.html', Data=professors_courses_info)
+    return render_template('/administratorHome.html', Data=professors_courses_info)
 
 
 @views.route('/authorHome.html')
