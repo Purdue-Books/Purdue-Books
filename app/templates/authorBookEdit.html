@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Book Creation</title>
+    <title>Edit Book</title>
     <link rel="stylesheet" href="../static/css/global.css" />
     <link rel="stylesheet" href="../static/css/authorBookCreation.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -40,17 +40,17 @@
         <form name="myForm" action="" onsubmit="return validateForm()" enctype="multipart/form-data" method="POST">
             <div class="sectionOne">
                 <!-- Image -->
-                <input type="file" name="fileToUpload" id="fileToUpload" required />
+                <input type="file" name="fileToUpload" id="fileToUpload" />
 
                 <!-- Title -->
-                <input type="text" name="title" placeholder="Title" value="" required />
+                <input type="text" name="title" placeholder="Title" value="{{ Book.title }}" required />
 
                 <!-- Published Year -->
-                <input type="text" name="published_year" placeholder="Published Year" value="" required />
+                <input type="text" name="published_year" placeholder="Published Year" value="{{ Book.published_year }}" required />
 
                 <!-- Genre -->
                 <select type="text" name="genre" id="genre">
-                    <option selected disabled>Genre</option>
+                    <option selected="selected">{{ Book.genre }}</option>
                     <option value="Fantasy">Fantasy</option>
                     <option value="Science">Science</option>
                     <option value="Dystopian">Dystopian</option>
@@ -67,7 +67,7 @@
                 </select>
 
                 <!-- Summary -->
-                <textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
+                <textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required>{{ Book.summary }}</textarea>
 
                 <!-- Button -->
                 <button type="submit" name="submit" class="submit">Submit</button>

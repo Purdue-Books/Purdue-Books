@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Home</title>
-	    <link rel="stylesheet" href="../static/css/global.css" />
-	    <link rel="stylesheet" href="../static/css/authorHome.css" />
-	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
-        <script src="../static/js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
-    </head>
-     <!--- Author Header HTML Code --->
-     <nav>
-        <div>
-            <h2>AUTHOR</h2>
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="../static/css/global.css" />
+    <link rel="stylesheet" href="../static/css/authorHome.css" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
+    <script src="../static/js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
+</head>
+<!--- Author Header HTML Code --->
+<nav>
+    <div>
+        <h2>AUTHOR</h2>
+    </div>
+    <ul>
+        <li>
+            <a href="/authorHome.html">
+                <div>HOME</div>
+            </a>
+        </li>
+        <li>
+            <a href="/authorProfile.html">
+                <div>SETTINGS</div>
+            </a>
+        </li>
+        <li>
+            <a href="/index.html">
+                <div>LOGOUT</div>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<body>
+    <section>
+        <!-- Job Search Bar with JavaScript -->
+        <h4>Books</h4>
+        <!-- refereshPage() the mySearch function runs based on the specific events-->
+        <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()"
+            placeholder="Search Books" />
+    </section>
+    <section>
+        <div class='cardContainer generic'>
+            <button class="submit"><a href="authorBookCreation.html">Create New Book</a></button>
+            {% for item in Data %}
+            <a class='cardLink generic' href='authorBookProfile.html/{{ item.book_id }}'>
+                <div class='card'>
+                    <div class='cardInfo'>
+                        <div id='information' class='middle_part'>
+                            <img src='data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Book Cover' />
+                        </div>
+                    </div>
+                    <h1>{{ item.title }}</h1>
+                </div>
+            </a>
+            {% endfor %}
         </div>
-            <ul>
-                <li>
-                    <a href="authorHome.html">
-                    <div>HOME</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="authorProfile.html">
-                    <div>SETTINGS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                    <div>LOGOUT</div>
-                    </a>
-                </li>
-            </ul>
-    </nav>
-    <body>
-        <section>
-            <!-- Job Search Bar with JavaScript -->
-            <h4>Books</h4>
-            <!-- refereshPage() the mySearch function runs based on the specific events-->
-            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Books" />
-        </section>
-        <section>
-            <div class='cardContainer generic'>
-                <button class="submit"><a href="authorBookCreation.html">Create New Book</a></button>
-                        <a class='cardLink generic' href='authorBook.html'>
-                            <div class='card'>
-                                <div class='cardInfo'>
-                                    <div id = 'information' class = 'middle_part'>
-                                        <img src= '../static/img/sample.jpg' alt='Book Cover' />
-                                    </div>
-                                </div>
-                                <h1>Book Name</h1>
-                            </div>
-                        </a>
-            </div>
-        </section>
-        <!-- Shows the Page Numbers -->
-	    <div id="pagination-container-generic" class = 'bottom_Section'></div> 
-    </body>
+    </section>
+    <!-- Shows the Page Numbers -->
+    <div id="pagination-container-generic" class='bottom_Section'></div>
+</body>
+
 </html>
