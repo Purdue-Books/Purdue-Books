@@ -59,19 +59,6 @@ def get_book(name):
              "author_url": book[4], "book_id": book[5], "summary": str(book[6])[0:50]})
     return books
 
-def get_course(name):
-    get_course_name_sql = "SELECT * FROM course WHERE name LIKE "
-    get_course_sql = get_course_name_sql + "'%" + name + "%' "
-    get_course_sql = get_course_sql + "OR subject LIKE " + "'%" + name + "%' "
-    get_course_sql = get_course_sql + "OR course_id LIKE " + "'%" + name + "%' "
-    db_cursor.execute(get_course_sql)
-    courses = []
-    ##for course in db_cursor.fetchall():
-       ## courses.append(
-          ##  {"name": course[0], "url": course[1], "image": course[2], "author": course[3],
-           ##  "author_url": course[4], "book_id": course[5], "summary": str(course[6])[0:50]})
-    return courses
-
 def get_books_by_author(author_id):
     get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
         author_id + "\" = ab.author_id AND ab.book_id = b.book_id;"
