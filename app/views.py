@@ -152,6 +152,15 @@ def get_administrator_by_id(sch_id):
         administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
     return administrators
 
+def get_author_by_id(author_id):
+    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = \"" + author_id + "\";"
+    db_cursor.execute(get_author_by_id_sql)
+    authors = []
+    for author in db_cursor.fetchall():
+        image = Image.query.filter_by(image_id=author[5]).first()
+        authors.append({"author_id": author[0], "first_name": author[1], "last_name": author[2], "email": author[3], "biography": author[4], "image": image})
+    return authors
+
 views = Blueprint('views', __name__)
 
 @login_required
@@ -420,8 +429,10 @@ def author_profile():
         database.session.commit()
 
         return redirect(url_for('views.author_home'))
-
-    return render_template('authorProfile.html')
+    result = get_author_by_id(current_user.get_id())
+    if len(result) == 0:
+        result.append({"author_id": "", "first_name": "", "last_name": "", "email": "", "biography": "", "image": ""})
+    return render_template('authorProfile.html', Author=result[0])
 
 
 @views.route('/professorProfile.html', methods=['GET', 'POST'])
