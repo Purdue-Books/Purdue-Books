@@ -103,8 +103,9 @@ def get_professor_by_id(prof_id):
     db_cursor.execute(get_professor_by_id_sql)
     professors = []
     for professor in db_cursor.fetchall():
+        image = Image.query.filter_by(image_id=professor[1]).first()
         professors.append({"prof_id": professor[0], "first_name": professor[2],
-                     "last_name": professor[3], "biography": professor[4], "professor": professor[5]})
+                     "last_name": professor[3], "biography": professor[4], "professor": professor[5], "image": image})
     return professors
 
 def get_professors():
@@ -204,13 +205,11 @@ def administrator_books():
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
 def administrator_course(id):
     professors_courses = get_assigned_professor_course_by_course_id(id)
-    print("professors_courses")
-    print(professors_courses)
     professors_courses_info = []
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
-        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
+        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "image": professor[0]['image'],
          "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year']})  
     return render_template('/administratorCourse.html', Data=professors_courses_info)
 
@@ -397,7 +396,7 @@ def author_profile():
         file = request.files["fileToUpload"]
         filename = secure_filename(file.filename)
         mimetype = file.mimetype
-        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
         database.session.add(image)
         database.session.commit()
 
@@ -425,7 +424,7 @@ def professor_profile():
         file = request.files['fileToUpload']
         filename = secure_filename(file.filename)
         mimetype = file.mimetype
-        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
+        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
         database.session.add(image)
         database.session.commit()
 
