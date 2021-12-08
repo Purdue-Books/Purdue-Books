@@ -41,11 +41,10 @@
                 <!-- Course Name -->
                 <input id="name" type="text" name="name" placeholder="Name" value="{{ Course.name }}" />
                 <!-- Course Summary -->
-				<textarea rows="4" cols="50" id="summary"  type="text" name="summary" placeholder="Summary" value="{{ Course.summary }}"></textarea>
+				<textarea rows="4" cols="50" id="summary"  type="text" name="summary" placeholder="Summary" required>{{ Course.summary }}</textarea>
                 <!-- subject -->
                 <input id="subject" type="text" name="subject" placeholder="Subject" value="{{ Course.subject }}" />
                 <!-- Professor -->
-                
                 <div class="select">
                     <select type="text" name="professor" id="professor">
                         <option selected="selected", value="{{ Selected_prof.prof_id }}">{{ Selected_prof.first_name }} {{ Selected_prof.last_name }}</option>
@@ -58,7 +57,7 @@
                 <!-- Semester -->
                 <div class="select">
                    <select type="text" name="semester" id="semester">
-                    <option selected="selected">{{ Course.semester }}</option>
+                        <option selected="selected">{{ Course.semester }}</option>
                         <option value="Fall">Fall</option>
                         <option value="Spring">Spring</option>
                         <option value="Summer">Summer</option>

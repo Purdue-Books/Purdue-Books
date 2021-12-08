@@ -89,6 +89,15 @@ def get_course_by_id(course_id):
                      "subject": course[3], "semester": course[4], "year": course[5]})
     return courses
 
+def get_professor_by_course_id(course_id):
+    get_professor_by_course_id_sql = "SELECT * FROM professor p, assigned__professor__course apc WHERE \"" + \
+        course_id + "\" = apc.course_id AND apc.prof_id = p.prof_id;"
+    db_cursor.execute(get_professor_by_course_id_sql)
+    professors = []
+    for prof in db_cursor.fetchall():
+        professors.append({"prof_id": prof[0], "first_name": prof[2], "last_name": prof[3], "biography": prof[4], "email": prof[5]})
+    return professors
+
 def get_courses():
     get_courses = "SELECT * FROM course c;"
     db_cursor.execute(get_courses)
@@ -289,9 +298,9 @@ def edit_course(id):
         return redirect(url_for('views.admin_home'))
     result = get_course_by_id(id)
     professors = get_professors()
-    prof_id = request.form.get("professor")
-    selected_prof = get_professor_by_id(str(prof_id))
-    return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof)
+    selected_prof = get_professor_by_course_id(id)
+    print(selected_prof)
+    return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof[0])
 
 @views.route('/deleteCourse/<string:id>', methods=['POST', 'GET'])
 @login_required
