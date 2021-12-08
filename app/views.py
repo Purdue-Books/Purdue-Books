@@ -114,7 +114,7 @@ def get_professor_by_id(prof_id):
     for professor in db_cursor.fetchall():
         image = Image.query.filter_by(image_id=professor[1]).first()
         professors.append({"prof_id": professor[0], "first_name": professor[2],
-                     "last_name": professor[3], "biography": professor[4], "professor": professor[5], "image": image})
+                     "last_name": professor[3], "biography": professor[4], "email": professor[5], "image": image})
     return professors
 
 def get_professors():
@@ -448,8 +448,10 @@ def professor_profile():
         database.session.commit()
 
         return redirect(url_for('views.professor_home'))
-
-    return render_template('professorProfile.html')
+    result = get_professor_by_id(current_user.get_id())
+    if len(result) == 0:
+        result.append({"prof_id": "", "first_name": "", "last_name": "", "biography": "", "email": ""})
+    return render_template('professorProfile.html', Professor=result[0])
 
 
 @views.route('/studentProfile.html', methods=['GET', 'POST'])
