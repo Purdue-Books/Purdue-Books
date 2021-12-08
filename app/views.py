@@ -295,7 +295,7 @@ def edit_course(id):
         prof_course.course_id = id
         database.session.commit() 
         database.session.flush()
-        return redirect(url_for('views.admin_home'))
+        return administrator_course(id)
     result = get_course_by_id(id)
     professors = get_professors()
     selected_prof = get_professor_by_course_id(id)
