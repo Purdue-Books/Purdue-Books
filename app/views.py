@@ -93,6 +93,16 @@ def get_book_by_id(book_id):
                      "summary": book[3], "genre": book[4], "image": image})
     return books
 
+def get_books():
+    get_books = "SELECT * FROM book b;"
+    db_cursor.execute(get_books)
+    books = []
+    for book in db_cursor.fetchall():
+        image = Image.query.filter_by(image_id=book[5]).first()
+        books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
+                     "summary": book[3], "genre": book[4], "image": image})
+    return books
+
 def get_course_by_id(course_id):
     get_course_by_id_sql = "SELECT * FROM course c WHERE c.course_id = \"" + course_id + "\";"
     db_cursor.execute(get_course_by_id_sql)
@@ -146,6 +156,15 @@ def get_assigned_professor_course_by_course_id(course_id):
         professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
                      "course_id": professor_course[2]})
     return professors_courses
+
+def get_book_professor_course(course_id, prof_id):
+    book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = \"" + course_id + " AND b.prof_id = \"" + prof_id + "\";"
+    db_cursor.execute(book_professor_course)
+    book_professor_courses = []
+    for book_professor_course in db_cursor.fetchall():
+        book_professor_courses.append({"prof_id": book_professor_course[0], "book_id": book_professor_course[1],
+                     "course_id": book_professor_course[2]})
+    return book_professor_courses
 
 views = Blueprint('views', __name__)
 
@@ -212,7 +231,8 @@ def create_course():
 
 @views.route('/administratorBooks.html', methods=['POST', 'GET'])
 def administrator_books():
-    return render_template('administratorBooks.html')
+    books = get_books()
+    return render_template('administratorBooks.html', Data=books)
 
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
 def administrator_course(id):
