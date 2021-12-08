@@ -42,10 +42,10 @@
                     <!-- Job Image and Job Title on the Left Side -->
                     <img src="../img/sample.jpg" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <h1 style="margin-top: 0;">Course Name {{ course_name }}</h1>
                         <div>
-                            <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                            <h4 style="margin: 0;">Professor Name {{ professor_name }}</h4>
+                            <h4 style="margin: 0;">Course Semester and Year {{ course_semester }} / {{ course_year }}</h4>
                         </div>
                     </div>
                 </div>
@@ -76,35 +76,21 @@
                         <div class="bookList">
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
-                                
+                            {% for i in range(len({{ books }})) %}
                                 <a class='cardLink generic' href='professorBookProfile.html'>
                                     <div class='card'>
                                         <div class='cardImage'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                                    <img src= '{{ books[i].image }}'alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
+                                            <h1>Book Name {{ books[i].name }}</h1>
+                                            <h3>Author Name {{ books[i].author }}</h3>
                                         </div>
                                     </div>
                                 </a>
-
-                                <a class='cardLink generic' href='professorBookProfile.html'>
-                                    <div class='card'>
-                                        <div class='cardImage'>
-                                            <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
-                                            </div>
-                                        </div>
-                                        <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
-                                        </div>
-                                    </div>
-                                </a>
-
+                            {% endfor %}
 
                             </div>
                         </div>
