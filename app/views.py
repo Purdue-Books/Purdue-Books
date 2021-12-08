@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask.wrappers import Response
-from .models import Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Book_Course, Image
+from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Book_Course, Image, Assigned_Professor_Course, Student_Course, Book_Course
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -59,6 +59,18 @@ def get_book(name):
              "author_url": book[4], "book_id": book[5], "summary": str(book[6])[0:50]})
     return books
 
+def get_course(name):
+    get_course_name_sql = "SELECT * FROM course WHERE name LIKE "
+    get_course_sql = get_course_name_sql + "'%" + name + "%' "
+    get_course_sql = get_course_sql + "OR subject LIKE " + "'%" + name + "%' "
+    get_course_sql = get_course_sql + "OR course_id LIKE " + "'%" + name + "%' "
+    db_cursor.execute(get_course_sql)
+    courses = []
+    ##for course in db_cursor.fetchall():
+       ## courses.append(
+          ##  {"name": course[0], "url": course[1], "image": course[2], "author": course[3],
+           ##  "author_url": course[4], "book_id": course[5], "summary": str(course[6])[0:50]})
+    return courses
 
 def get_books_by_author(author_id):
     get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
@@ -81,6 +93,59 @@ def get_book_by_id(book_id):
                      "summary": book[3], "genre": book[4], "image": image})
     return books
 
+def get_course_by_id(course_id):
+    get_course_by_id_sql = "SELECT * FROM course c WHERE c.course_id = \"" + course_id + "\";"
+    db_cursor.execute(get_course_by_id_sql)
+    courses = []
+    for course in db_cursor.fetchall():
+        courses.append({"course_id": course[0], "name": course[1], "summary": course[2],
+                     "subject": course[3], "semester": course[4], "year": course[5]})
+    return courses
+
+def get_courses():
+    get_courses = "SELECT * FROM course c;"
+    db_cursor.execute(get_courses)
+    courses = []
+    for course in db_cursor.fetchall():
+        courses.append({"course_id": course[0], "name": course[1], "summary": course[2],
+                     "subject": course[3], "semester": course[4], "year": course[5]})
+    return courses
+
+def get_professor_by_id(prof_id):
+    get_professor_by_id_sql = "SELECT * FROM professor p WHERE p.prof_id = \"" + prof_id + "\";"
+    db_cursor.execute(get_professor_by_id_sql)
+    professors = []
+    for professor in db_cursor.fetchall():
+        professors.append({"prof_id": professor[0], "first_name": professor[2],
+                     "last_name": professor[3], "biography": professor[4], "professor": professor[5]})
+    return professors
+
+def get_professors():
+    get_professors = "SELECT * FROM professor p;"
+    db_cursor.execute(get_professors)
+    professors = []
+    for professor in db_cursor.fetchall():
+        professors.append({"prof_id": professor[0], "first_name": professor[2],
+                     "last_name": professor[3], "biography": professor[4], "email": professor[5]})
+    return professors
+
+def get_assigned_professor_course():
+    assigned_professor_course = "SELECT * FROM assigned__professor__course a;"
+    db_cursor.execute(assigned_professor_course)
+    professors_courses = []
+    for professor_course in db_cursor.fetchall():
+        professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
+                     "course_id": professor_course[2]})
+    return professors_courses
+
+def get_assigned_professor_course_by_course_id(course_id):
+    assigned_professor_course = "SELECT * FROM assigned__professor__course a WHERE a.course_id = \"" + course_id + "\";"
+    db_cursor.execute(assigned_professor_course)
+    professors_courses = []
+    for professor_course in db_cursor.fetchall():
+        professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
+                     "course_id": professor_course[2]})
+    return professors_courses
 
 views = Blueprint('views', __name__)
 
@@ -93,7 +158,7 @@ def create_book():
         published_year = request.form.get("published_year")
         summary = request.form.get("summary")
         genre = request.form.get("genre")
-        image_id = uuid.uuid1();
+        image_id = uuid.uuid1()
         new_book = Book(book_id=book_id, title=title, published_year=published_year,
                         summary=summary, genre=genre, image=image_id)
         author_book = Author_Book(
@@ -113,6 +178,66 @@ def create_book():
         result = get_books_by_author(author_id=current_user.get_id())
         return render_template('authorHome.html', Data=result)
     return render_template('authorBookCreation.html')
+
+@views.route('/administratorCourseCreation.html', methods=['POST', 'GET'])
+def create_course():
+    if request.method == 'POST':
+        course_id = uuid.uuid1()
+        name = request.form.get("name")
+        summary = request.form.get("summary")
+        subject = request.form.get("subject")
+        semester = request.form.get("semester")
+        year = request.form.get("year")
+        professor = request.form.get("professor")
+        print("professor:"+ professor)
+        new_course = Course(course_id=course_id, name=name, summary=summary, subject=subject, semester=semester, year=year)
+        database.session.add(new_course)
+        database.session.commit()
+        prof_course = Assigned_Professor_Course(prof_id = professor, sch_id = current_user.get_id(), course_id=course_id)
+        database.session.add(prof_course)
+        database.session.commit()
+        professors_courses = get_assigned_professor_course()
+        print("professors_courses")
+        print(*professors_courses)
+        professors_courses_info = []
+        for professor_course in professors_courses:
+            professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+            course = get_course_by_id(course_id=professor_course['course_id'])
+            professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
+            "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+        return render_template('/administratorHome.html', Data=professors_courses_info)
+        #return render_template('administratorHome.html')
+    professors = get_professors();   
+    return render_template('administratorCourseCreation.html', Data=professors)
+
+@views.route('/administratorBooks.html', methods=['POST', 'GET'])
+def administrator_books():
+    return render_template('administratorBooks.html')
+
+@views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
+def administrator_course(id):
+    professors_courses = get_assigned_professor_course_by_course_id(id)
+    print("professors_courses")
+    print(professors_courses)
+    professors_courses_info = []
+    for professor_course in professors_courses:
+        professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+        course = get_course_by_id(course_id=professor_course['course_id'])
+        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
+         "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year']})  
+    return render_template('/administratorCourse.html', Data=professors_courses_info)
+
+@views.route('/administratorBookProfile.html', methods=['POST', 'GET'])
+def administrator_book_profile():
+    return render_template('administratorBookProfile.html')
+
+@views.route('/professorBookProfile.html', methods=['POST', 'GET'])
+def professor_book_profile():
+    return render_template('professorBookProfile.html')
+
+@views.route('/professorBooks.html', methods=['POST', 'GET'])
+def professor_books():
+    return render_template('professorBooks.html')
 
 @views.route('/authorBookEdit.html/<string:id>', methods=['POST', 'GET'])
 @login_required
@@ -134,7 +259,8 @@ def edit_book(id):
     result = get_book_by_id(id)
     return render_template('authorBookEdit.html', Book=result[0])
 
-@views.route('/delete/<string:id>', methods=['POST', 'GET'])
+
+@views.route('/deleteBook/<string:id>', methods=['POST', 'GET'])
 @login_required
 def delete_book(id):
     Book_Course.query.filter_by(book_id=id).delete()
@@ -145,6 +271,51 @@ def delete_book(id):
     database.session.commit()
     database.session.flush()
     return redirect(url_for('views.author_home'))
+
+@views.route('/administratorCourseEdit.html/<string:id>', methods=['POST', 'GET'])
+@login_required
+def edit_course(id):
+    if request.method == 'POST':
+        result = get_course_by_id(id)
+        name = request.form.get("name")
+        summary = request.form.get("summary")
+        subject = request.form.get("subject")
+        semester = request.form.get("semester")
+        year = request.form.get("year")
+        selected_prof = request.form.get("professor")
+        course = Course.query.filter_by(course_id=result[0].get('course_id')).first()
+        course.name = name
+        course.summary = summary
+        course.subject = subject
+        course.semester = semester
+        course.year = year
+        database.session.commit() 
+        database.session.flush()
+        prof_course = Assigned_Professor_Course.query.filter_by(course_id=result[0].get('course_id')).first()
+        prof_course.sch_id = current_user.get_id()
+        prof_course.prof_id = selected_prof
+        prof_course.course_id = id
+        database.session.commit() 
+        database.session.flush()
+        return redirect(url_for('views.admin_home'))
+    result = get_course_by_id(id)
+    professors = get_professors()
+    prof_id = request.form.get("professor")
+    selected_prof = get_professor_by_id(str(prof_id))
+    return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof)
+
+@views.route('/deleteCourse/<string:id>', methods=['POST', 'GET'])
+@login_required
+def delete_course(id):
+    Assigned_Professor_Course.query.filter_by(course_id=id).delete()
+    Book_Professor_Course.query.filter_by(course_id=id).delete()
+    Student_Course.query.filter_by(course_id=id).delete()
+    Book_Course.query.filter_by(course_id=id).delete()
+    Course.query.filter_by(course_id=id).delete()
+    database.session.commit()
+    database.session.flush()
+    return redirect(url_for('views.admin_home'))
+    
 
 @views.route('/result.html', methods=['POST', 'GET'])
 def search():
@@ -160,7 +331,14 @@ def search():
 @views.route('/administratorHome.html')
 @login_required
 def admin_home():
-    return render_template('administratorHome.html')
+    professors_courses = get_assigned_professor_course()
+    professors_courses_info = []
+    for professor_course in professors_courses:
+        professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+        course = get_course_by_id(course_id=professor_course['course_id'])
+        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
+        "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+    return render_template('/administratorHome.html', Data=professors_courses_info)
 
 
 @views.route('/authorHome.html')
@@ -187,6 +365,12 @@ def student_home():
     return render_template('studentHome.html')
 
 
+@views.route('/studentBookmarks.html')
+@login_required
+def student_bookmarks():
+    return render_template('studentBookmarks.html')
+
+
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
 @login_required
 def admin_profile():
@@ -195,7 +379,6 @@ def admin_profile():
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
         email = request.form.get('email')
-
         new_admin = School_Administrator(
             sch_id=sch_id, first_name=firstname, last_name=lastname, email=email)
         database.session.add(new_admin)

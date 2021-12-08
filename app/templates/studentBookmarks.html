@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Student Bookmarks</title>
+	    <link rel="stylesheet" href="../static/css/global.css" />
+	    <link rel="stylesheet" href="../static/css/studentBookmarks.css" />
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
+        <script src="../js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
+    </head>
+     <!--- Student Header HTML Code --->
+  <nav>
+    <div>
+        <h2>STUDENT</h2>
+    </div>
+        <ul>
+            <li>
+                <a href="studentHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="studentBookmarks.html">
+                <div>BOOKMARKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="studentProfessors.html">
+                <div>PROFESSORS</div>
+                </a>
+            </li>
+            <li>
+                <a href="studentProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
+</nav>
+    <body>
+        <section>
+            <!-- Saved Classes Bar with JavaScript -->
+            <h4>Bookmarks</h4>
+            <!-- refereshPage() the mySearch function runs based on the specific events-->
+            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Bookmarks" />
+        </section>
+        <section>
+            <div class='cardContainer generic'>
+                <a class='cardLink generic' href='studentClassesPage.html'>
+                    <div class='card'>
+                        <div class='cardInfo'>
+                            <h1>Class Names</h1>
+                            <h3>Professor Name</h3>                         
+                            <h4>Semester</h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <!-- Shows the Page Numbers -->
+	    <div id="pagination-container-generic" class = 'bottom_Section'></div> 
+    </body>
+</html>

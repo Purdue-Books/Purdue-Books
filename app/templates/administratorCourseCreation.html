@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Administrator Course Creation</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/administratorCourseCreation.css" />
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/administratorCourseCreation.css" />
     </head>
     <!--- Administrator Header HTML Code --->
   <nav>
@@ -12,22 +12,22 @@
     </div>
         <ul>
             <li>
-                <a href="administratorHome.html">
+                <a href="/administratorHome.html">
                 <div>HOME</div>
                 </a>
             </li>
             <li>
-                <a href="administratorBooks.html">
+                <a href="/administratorBooks.html">
                 <div>BOOKS</div>
                 </a>
             </li>
             <li>
-                <a href="administratorProfile.html">
+                <a href="/administratorProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
             <li>
-                <a href="index.html">
+                <a href="/index.html">
                 <div>LOGOUT</div>
                 </a>
             </li>
@@ -36,13 +36,28 @@
     <body>
           <section>
             <h2>Course</h2>
-            <form name="myForm" action="" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="myForm" action="" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
             <div class="sectionOne">
                 <!-- Course Name -->
                 <input id="name" type="text" name="name" placeholder="Name" value="" />
+                <!-- Course Summary -->
+				<textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
+                <!-- subject -->
+                <input id="subject" type="text" name="subject" placeholder="Subject" value="" />
+                <!-- Professor -->
+                
+                <div class="select">
+                    <select type="text" name="professor" id="professor">
+                         <option selected disabled>Professor</option>
+                         {% for item in Data %}
+                         <option value="{{ item.prof_id }}">{{ item.first_name }} {{ item.last_name }} <!--- {{ item.prof_id }}---></option>
+                         {% endfor %}
+                     </select>
+                 </div>
+                 
                 <!-- Semester -->
                 <div class="select">
-                   <select type="text" name="Semester" id="semester">
+                   <select type="text" name="semester" id="semester">
                         <option selected disabled>Semester</option>
                         <option value="Fall">Fall</option>
                         <option value="Spring">Spring</option>
@@ -51,23 +66,13 @@
                 </div>
                 <!-- Year -->
                 <div class="select">
-                    <select type="text" name="Year" id="Year">
+                    <select type="text" name="year" id="year">
                          <option selected disabled>Year</option>
                          <option value="2019">2019</option>
                          <option value="2020">2020</option>
                          <option value="2021">2021</option>
                      </select>
                  </div> 
-                <!-- Course Summary -->
-				<textarea rows="4" cols="50" type="text" name="summary" placeholder="Summary" required></textarea>
-                <!-- List of Professors-->
-                <div class="select">
-                    <select type="text" name="Professor" id="Professor">
-                        <option selected disabled>Professor</option>
-                        <option value="test">Professor Names</option>
-                        <option value="test1">test placeholder</option>
-                    </select>
-                </div>
             </div>
             <div class="sectionThree">
                 <button type="submit" name="submit" class="submit">Submit</button>

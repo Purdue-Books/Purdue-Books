@@ -57,6 +57,13 @@ class Book(database.Model):
     genre = database.Column(database.String(256))
     image = database.Column(database.String(256))
 
+class Course(database.Model):
+    course_id = database.Column(database.String(256), primary_key=True)
+    name = database.Column(database.String(256))
+    summary = database.Column(database.String(256))
+    subject = database.Column(database.String(256))
+    semester = database.Column(database.String(256))
+    year = database.Column(database.String(256))
 
 class Author_Book(database.Model):
     author_id = database.Column(database.String(

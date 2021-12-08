@@ -1,74 +1,75 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Student Profile</title>
-    <link rel="stylesheet" href="../static/css/global.css" />
-    <link rel="stylesheet" href="../static/css/studentProfile.css" />
-</head>
-<!--- Student Header HTML Code --->
-<nav>
+    <head>
+        <title>Student Profile</title>
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/studentProfile.css" />
+    </head>
+    <!--- Student Header HTML Code --->
+  <nav>
     <div>
         <h2>STUDENT</h2>
     </div>
-    <ul>
-        <li>
-            <a href="studentHome.html">
+        <ul>
+            <li>
+                <a href="studentHome.html">
                 <div>HOME</div>
-            </a>
-        </li>
-        <li>
-            <a href="studentClasses.html">
-                <div>CLASSES</div>
-            </a>
-        </li>
-        <li>
-            <a href="studentProfile.html">
+                </a>
+            </li>
+            <li>
+                <a href="studentBookmarks.html">
+                <div>BOOKMARKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="studentProfessors.html">
+                <div>PROFESSORS</div>
+                </a>
+            </li>
+            <li>
+                <a href="studentProfile.html">
                 <div>SETTINGS</div>
-            </a>
-        </li>
-        <li>
-            <a href="index.html">
+                </a>
+            </li>
+            <li>
+                <a href="index.html">
                 <div>LOGOUT</div>
-            </a>
-        </li>
-    </ul>
+                </a>
+            </li>
+        </ul>
 </nav>
-
-<body>
-    <section>
-        <h2>Profile</h2>
-        <form name="blank" id="blank" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
-        <form name="myForm" id="myForm" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
-        <div class="sectionOne">
-            <!-- File Upload -->
-            <input type="file" name="fileToUpload" id="fileToUpload" required />
-            <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
-            <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
-            <!-- Major -->
-            <div class="select">
-                <select type="text" name="major" id="major">
+    <body>
+          <section>
+            <h2>Profile</h2>
+            <form name="myForm" action="php/student_php/studentDetails.php" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <div class="sectionOne">
+                <!-- File Upload -->
+                <input type="file" name="fileToUpload" id="fileToUpload" required/>
+                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
+                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
+                <!-- Major -->
+                <div class="select">
+                    <select type="text" name="major" id="major">
                     <option selected disabled>Major</option>
                     <option selected value="Computer Science">Computer Science</option>
-                </select>
+                    </select>
+                </div>
+                <!-- Major End -->
+                <input id="email" type="text" name="email" placeholder="Email" value="" />
+                <div class="select">
+                    <select type="text" name="gradeyear" id="gradeYearslct">
+                      <option selected disabled>Grade Year</option>
+                      <option value="1">Freshmen</option>
+                      <option value="2">Sophomore</option>
+                      <option value="3">Junior</option>
+                      <option value="4">Senior</option>
+                    </select>
+                </div> 
             </div>
-            <!-- Major End -->
-            <input id="email" type="text" name="email" placeholder="Email" value="" />
-            <div class="select">
-                <select type="text" name="gradeyear" id="gradeYearslct">
-                    <option selected disabled>Grade Year</option>
-                    <option value="1">Freshmen</option>
-                    <option value="2">Sophomore</option>
-                    <option value="3">Junior</option>
-                    <option value="4">Senior</option>
-                </select>
-            </div>
-        </div>
-        <div class="sectionThree">
-            <button type="submit" form="myForm" name="submit" class="submit">Submit</button>
-        </div>
-        </form>
-    </section>
-</body>
-
+            <div class="sectionThree">
+                <button type="submit" name="submit" class="submit">Submit</button>
+              </div>
+            </form>
+          </section>
+      </body>
 </html>
