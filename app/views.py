@@ -365,6 +365,12 @@ def student_home():
     return render_template('studentHome.html')
 
 
+@views.route('/studentBookmarks.html')
+@login_required
+def student_bookmarks():
+    return render_template('studentBookmarks.html')
+
+
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
 @login_required
 def admin_profile():
