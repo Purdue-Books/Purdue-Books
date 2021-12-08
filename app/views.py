@@ -263,11 +263,14 @@ def edit_book(id):
 @views.route('/deleteBook/<string:id>', methods=['POST', 'GET'])
 @login_required
 def delete_book(id):
+    result = get_book_by_id(id)
+    Image.query.filter_by(image_id=result[0].get('image').image_id).delete()
     Book_Course.query.filter_by(book_id=id).delete()
     Book_Professor_Course.query.filter_by(book_id=id).delete()
     Professor_Book.query.filter_by(book_id=id).delete()
     Author_Book.query.filter_by(book_id=id).delete()
     Book.query.filter_by(book_id=id).delete()
+    
     database.session.commit()
     database.session.flush()
     return redirect(url_for('views.author_home'))
