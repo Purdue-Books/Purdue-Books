@@ -40,9 +40,9 @@
             <form name="myForm" id="myForm" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
             <div class="sectionOne">
                 <!-- File Upload -->
-                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
-                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
-                <input id="email" type="text" name="email" placeholder="Email" value="" />
+                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="{{ Administrator.first_name }}" />
+                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="{{ Administrator.last_name }}" />
+                <input id="email" type="text" name="email" placeholder="Email" value="{{ Administrator.email }}" />
             </div>
             <div class="sectionThree">
                 <button type="submit" name="submit" class="submit">Submit</button>

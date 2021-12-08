@@ -144,6 +144,14 @@ def get_assigned_professor_course_by_course_id(course_id):
                      "course_id": professor_course[2]})
     return professors_courses
 
+def get_administrator_by_id(sch_id):
+    get_administrator_by_id_sql = "SELECT * FROM school__administrator sa WHERE sa.sch_id = \"" + sch_id + "\";"
+    db_cursor.execute(get_administrator_by_id_sql)
+    administrators = []
+    for admin in db_cursor.fetchall():
+        administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
+    return administrators
+
 views = Blueprint('views', __name__)
 
 @login_required
@@ -382,8 +390,10 @@ def admin_profile():
         database.session.add(new_admin)
         database.session.commit()
         return redirect(url_for('views.admin_home'))
-
-    return render_template('administratorProfile.html')
+    result = get_administrator_by_id(current_user.get_id())
+    if len(result) == 0:
+        result.append({"sch_id": "", "first_name": "", "last_name": "", "email": ""})
+    return render_template('administratorProfile.html', Administrator=result[0])
 
 
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
