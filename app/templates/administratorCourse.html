@@ -4,7 +4,7 @@
         <title>Administrator Course</title>
         <link rel="stylesheet" href="../static/css/global.css" />
         <link rel="stylesheet" href="../static/css/administratorCourse.css" />
-        <script src="../js/myTabs.js" defer></script>
+        <script src="../static/js/myTabs.js" defer></script>
     </head>
     <!---  Header HTML Code --->
     <nav>
@@ -35,9 +35,10 @@
             </ul>
     </nav>
     <body>
-        {% for item in Data %}
+        
         <section>
             <!-- Student Title Section -->
+            {% for item in Data %}
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
@@ -55,6 +56,7 @@
                     <a href="/deleteCourse/{{ item.course_id }}"><button type="submit" name="delete" class="delete">Delete</button></a>
                 </div>
             </div>
+            
             <!-- Student Header Section -->
             <div class="infoSections">
                 <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
@@ -73,6 +75,8 @@
                             </p>
                         </div>
                     </div>
+                    {% endfor %}
+                    {% for item in Author_book_info %}
                     <!-- Books Section -->
                     <div id="BOOKS" data-tab-content>
                         <div class="bookList">
@@ -87,8 +91,8 @@
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
+                                            <h1>{{ item.author_book.book_name }}</h1>
+                                            <h3>{{ item.author_book.author_name }}</h3>
                                         </div>
                                     </div>
                                 </a>
@@ -111,8 +115,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Course Section -->
+                    {% endfor %}
+                    <!-- Statistics Section -->
                     <div id="STATISTICS" data-tab-content>
                         <div class="statisticsInfo">
                             <h3>Statistics</h3>
@@ -126,6 +130,6 @@
                 </div>
             </div>
         </section>
-        {% endfor %}
+       
       </body>
 </html>

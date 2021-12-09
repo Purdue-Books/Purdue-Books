@@ -83,6 +83,28 @@ def get_books_by_author(author_id):
                      "summary": book[3], "genre": book[4], "image": result[0].get('image'), "author_id": book[6]})
     return books
 
+def get_author_by_id(author_id): 
+    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = \"" + author_id + "\";"
+    db_cursor.execute(get_author_by_id_sql)
+    authors = []
+    for author in db_cursor.fetchall():
+        authors.append({"author_id": author[0], "first_name": author[1], "last_name": author[2],
+                     "biography": author[3], "email": author[4]})
+    return authors    
+
+
+def get_author_by_book_id(book_id):
+    get_author_by_book_id_sql = "SELECT * FROM author__book ab WHERE \"" + \
+        book_id + "\" = ab.book_id;"
+    db_cursor.execute(get_author_by_book_id_sql)
+    author_books = []
+    for author_book in db_cursor.fetchall():
+        author = get_author_by_id(author_book[0])
+        book = get_book_by_id(author_book[1])
+        author_books.append({"author_id": author_book[0], "book_id": author_book[1], "book_title": book['title'],
+                     "author_name": author['first_name'] + author['last_name'], "image": book[0].get('image')})
+    return author_books
+
 def get_book_by_id(book_id):
     get_book_by_id_sql = "SELECT * FROM book b WHERE b.book_id = \"" + book_id + "\";"
     db_cursor.execute(get_book_by_id_sql)
@@ -158,12 +180,12 @@ def get_assigned_professor_course_by_course_id(course_id):
     return professors_courses
 
 def get_book_professor_course(course_id, prof_id):
-    book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = \"" + course_id + " AND b.prof_id = \"" + prof_id + "\";"
+    book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = \"" + course_id + "\" AND b.prof_id = \"" + prof_id + "\";"
     db_cursor.execute(book_professor_course)
     book_professor_courses = []
     for book_professor_course in db_cursor.fetchall():
-        book_professor_courses.append({"prof_id": book_professor_course[0], "book_id": book_professor_course[1],
-                     "course_id": book_professor_course[2]})
+        book_professor_courses.append({"prof_id": book_professor_course[0], "course_id": book_professor_course[1],
+                     "book_id": book_professor_course[2]})
     return book_professor_courses
 
 views = Blueprint('views', __name__)
@@ -222,17 +244,18 @@ def create_course():
         for professor_course in professors_courses:
             professor = get_professor_by_id(prof_id=professor_course['prof_id'])
             course = get_course_by_id(course_id=professor_course['course_id'])
+            books = get_book_professor_course(course[0]['course_id'], professor[0]['prof_id'])
             professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
-            "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
-        return render_template('/administratorHome.html', Data=professors_courses_info)
+            "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], 
+            "course_id": course[0]['course_id'], "books": books})
+        return render_template('/administratorHome.html', Data=professors_courses_info, Books=books)
         #return render_template('administratorHome.html')
     professors = get_professors();   
     return render_template('administratorCourseCreation.html', Data=professors)
 
-@views.route('/administratorBooks.html', methods=['POST', 'GET'])
+@views.route('/administratorBooks.html/', methods=['POST', 'GET'])
 def administrator_books():
-    books = get_books()
-    return render_template('administratorBooks.html', Data=books)
+    return render_template('administratorBooks.html')
 
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
 def administrator_course(id):
@@ -240,12 +263,18 @@ def administrator_course(id):
     print("professors_courses")
     print(professors_courses)
     professors_courses_info = []
+    author_books_info = []
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
+        book = get_book_professor_course(course[0]['course_id'], professor[0]['prof_id'])
+        author_book = get_author_by_book_id(book['book_id'])
+        author_books_info.append({"author_book": author_book})
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
-         "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year']})  
-    return render_template('/administratorCourse.html', Data=professors_courses_info)
+         "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], 
+         "course_semester": course[0]['semester'], "course_year": course[0]['year']}) 
+        professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+    return render_template('/administratorCourse.html', Data=professors_courses_info, Author_book_info = author_books_info)
 
 @views.route('/administratorBookProfile.html', methods=['POST', 'GET'])
 def administrator_book_profile():
