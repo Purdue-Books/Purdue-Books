@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask.wrappers import Response
-from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Book_Course, Image, Assigned_Professor_Course, Student_Course, Book_Course
+from .models import Course, Professor, User, Student, Author, School_Administrator, Book, BookCourse, ProfCourse, Author_Book, Professor_Book, Book_Professor_Course, Image, Assigned_Professor_Course, Student_Course, Book_Course
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -59,6 +59,19 @@ def get_book(name):
              "author_url": book[4], "book_id": book[5], "summary": str(book[6])[0:50]})
     return books
 
+def get_course(name):
+    get_course_name_sql = "SELECT * FROM course WHERE name LIKE "
+    get_course_sql = get_course_name_sql + "'%" + name + "%' "
+    get_course_sql = get_course_sql + "OR subject LIKE " + "'%" + name + "%' "
+    get_course_sql = get_course_sql + "OR course_id LIKE " + "'%" + name + "%' "
+    db_cursor.execute(get_course_sql)
+    courses = []
+    ##for course in db_cursor.fetchall():
+       ## courses.append(
+          ##  {"name": course[0], "url": course[1], "image": course[2], "author": course[3],
+           ##  "author_url": course[4], "book_id": course[5], "summary": str(course[6])[0:50]})
+    return courses
+
 def get_books_by_author(author_id):
     get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
         author_id + "\" = ab.author_id AND ab.book_id = b.book_id;"
@@ -89,15 +102,6 @@ def get_course_by_id(course_id):
                      "subject": course[3], "semester": course[4], "year": course[5]})
     return courses
 
-def get_professor_by_course_id(course_id):
-    get_professor_by_course_id_sql = "SELECT * FROM professor p, assigned__professor__course apc WHERE \"" + \
-        course_id + "\" = apc.course_id AND apc.prof_id = p.prof_id;"
-    db_cursor.execute(get_professor_by_course_id_sql)
-    professors = []
-    for prof in db_cursor.fetchall():
-        professors.append({"prof_id": prof[0], "first_name": prof[2], "last_name": prof[3], "biography": prof[4], "email": prof[5]})
-    return professors
-
 def get_courses():
     get_courses = "SELECT * FROM course c;"
     db_cursor.execute(get_courses)
@@ -112,9 +116,8 @@ def get_professor_by_id(prof_id):
     db_cursor.execute(get_professor_by_id_sql)
     professors = []
     for professor in db_cursor.fetchall():
-        image = Image.query.filter_by(image_id=professor[1]).first()
         professors.append({"prof_id": professor[0], "first_name": professor[2],
-                     "last_name": professor[3], "biography": professor[4], "email": professor[5], "image": image})
+                     "last_name": professor[3], "biography": professor[4], "professor": professor[5]})
     return professors
 
 def get_professors():
@@ -143,14 +146,6 @@ def get_assigned_professor_course_by_course_id(course_id):
         professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
                      "course_id": professor_course[2]})
     return professors_courses
-
-def get_administrator_by_id(sch_id):
-    get_administrator_by_id_sql = "SELECT * FROM school__administrator sa WHERE sa.sch_id = \"" + sch_id + "\";"
-    db_cursor.execute(get_administrator_by_id_sql)
-    administrators = []
-    for admin in db_cursor.fetchall():
-        administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
-    return administrators
 
 views = Blueprint('views', __name__)
 
@@ -222,11 +217,13 @@ def administrator_books():
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
 def administrator_course(id):
     professors_courses = get_assigned_professor_course_by_course_id(id)
+    print("professors_courses")
+    print(professors_courses)
     professors_courses_info = []
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
-        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "image": professor[0]['image'],
+        professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
          "course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year']})  
     return render_template('/administratorCourse.html', Data=professors_courses_info)
 
@@ -262,18 +259,35 @@ def edit_book(id):
     result = get_book_by_id(id)
     return render_template('authorBookEdit.html', Book=result[0])
 
+@views.route('/<id>/searchCourse/<c_name>')
+@login_required
+def search_course(id,c_name):
+    professor = Professor.query.filter_by(prof_id=id).first()
+    course = Course.query.filter_by(name=c_name).first()
+    if course is None:
+        return render_template('professorCourseNotFound.html')
+    professor_check = ProfCourse.query.filter_by(course_id=course.course_id).first()
+    if (professor_check.prof_id != professor.prof_id):
+        return render_template('professorNotCourse.html',course_name=course.name,professor_name=str(professor_check.last_name) + ". "
+       + str(professor_check.first_name),course_semester=course.semester,course_year=course.year,
+                           course_description=course.summary,course_image=course.image)
+    books = []
+    bookCourse = BookCourse.query.filter_by(course_id=course.course_id)
+    for bc in bookCourse:
+        book_id = bc.book_id
+        books.append(Book.query.filter_by(book_id=book_id).first())
+    return render_template('professorCourse.html',course_name=course.name,professor_name=str(professor.last_name) + ". "
+       + str(professor.first_name),course_semester=course.semester,course_year=course.year,books=books,
+                           course_description=course.summary,course_image=course.image)
 
 @views.route('/deleteBook/<string:id>', methods=['POST', 'GET'])
 @login_required
 def delete_book(id):
-    result = get_book_by_id(id)
-    Image.query.filter_by(image_id=result[0].get('image').image_id).delete()
     Book_Course.query.filter_by(book_id=id).delete()
     Book_Professor_Course.query.filter_by(book_id=id).delete()
     Professor_Book.query.filter_by(book_id=id).delete()
     Author_Book.query.filter_by(book_id=id).delete()
     Book.query.filter_by(book_id=id).delete()
-    
     database.session.commit()
     database.session.flush()
     return redirect(url_for('views.author_home'))
@@ -303,12 +317,12 @@ def edit_course(id):
         prof_course.course_id = id
         database.session.commit() 
         database.session.flush()
-        return administrator_course(id)
+        return redirect(url_for('views.admin_home'))
     result = get_course_by_id(id)
     professors = get_professors()
-    selected_prof = get_professor_by_course_id(id)
-    print(selected_prof)
-    return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof[0])
+    prof_id = request.form.get("professor")
+    selected_prof = get_professor_by_id(str(prof_id))
+    return render_template('administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof)
 
 @views.route('/deleteCourse/<string:id>', methods=['POST', 'GET'])
 @login_required
@@ -359,22 +373,22 @@ def author_book_profile(id):
     result = get_book_by_id(book_id=id)
     return render_template('/authorBookProfile.html', Data=result)
 
-@views.route('/professorHome.html')
+@views.route('/professorHome.html', methods=['POST', 'GET'])
 @login_required
 def professor_home():
-    return render_template('professorHome.html')
+    user = current_user.get_id()
+    print("user is " + str(user))
+    if request.method != 'POST':
+        return render_template('professorHome.html',pid=user)
+    else:
+        name = request.form.get('search')
+        return redirect(url_for('views.search_course',id=user,c_name=name))
 
 
 @views.route('/studentHome.html')
 @login_required
 def student_home():
     return render_template('studentHome.html')
-
-
-@views.route('/studentBookmarks.html')
-@login_required
-def student_bookmarks():
-    return render_template('studentBookmarks.html')
 
 
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
@@ -390,10 +404,8 @@ def admin_profile():
         database.session.add(new_admin)
         database.session.commit()
         return redirect(url_for('views.admin_home'))
-    result = get_administrator_by_id(current_user.get_id())
-    if len(result) == 0:
-        result.append({"sch_id": "", "first_name": "", "last_name": "", "email": ""})
-    return render_template('administratorProfile.html', Administrator=result[0])
+
+    return render_template('administratorProfile.html')
 
 
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
@@ -415,7 +427,7 @@ def author_profile():
         file = request.files["fileToUpload"]
         filename = secure_filename(file.filename)
         mimetype = file.mimetype
-        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
+        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
         database.session.add(image)
         database.session.commit()
 
@@ -433,7 +445,7 @@ def professor_profile():
         lastname = request.form.get('lastname')
         biography = request.form.get('biography')
         email = request.form.get('email')
-        image_id = uuid.uuid1();
+        image_id = uuid.uuid1()
 
         new_prof = Professor(prof_id=prof_id, first_name=firstname,
                              last_name=lastname, biography=biography, email=email, image=image_id)
@@ -443,15 +455,13 @@ def professor_profile():
         file = request.files['fileToUpload']
         filename = secure_filename(file.filename)
         mimetype = file.mimetype
-        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
+        image = Image(image_id=image_id, image=file.read(), mimetype=mimetype, name=filename)
         database.session.add(image)
         database.session.commit()
 
         return redirect(url_for('views.professor_home'))
-    result = get_professor_by_id(current_user.get_id())
-    if len(result) == 0:
-        result.append({"prof_id": "", "first_name": "", "last_name": "", "biography": "", "email": ""})
-    return render_template('professorProfile.html', Professor=result[0])
+
+    return render_template('professorProfile.html')
 
 
 @views.route('/studentProfile.html', methods=['GET', 'POST'])
