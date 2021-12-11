@@ -36,7 +36,10 @@
             <!-- Search Bar with JavaScript -->
             <h4>Assigned Courses</h4>
             <!-- refereshPage() the mySearch function runs based on the specific events-->
-            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Courses" />
+            <form method="post">
+            <input type="search" id="generic" name="search" onblur="refreshPageGeneric()" placeholder="Search Courses" />
+                <button type="submit">Submit</button>
+            </form>
         </section>
         <section>
             <div class='cardContainer generic'>
