@@ -30,6 +30,26 @@ class Professor(database.Model):
     email = database.Column(database.String(256))
 
 
+class ProfCourse(database.Model):
+    __tablename__ = "profCourse"
+    id = database.Column(database.String(256), primary_key=True)
+    prof_id = database.Column(database.String(256))
+    course_id = database.Column(database.String(256))
+
+
+class BookCourse(database.Model):
+    __tablename__ = 'bookCourse'
+    id = database.Column(database.String(256), primary_key=True)
+    book_id = database.Column(database.String(256))
+    course_id = database.Column(database.String(256))
+    def get_id(self):
+        return self.id
+    def get_book(self):
+        return self.book_id
+    def get_course(self):
+        return self.course_id
+
+
 class Student(database.Model):
     stud_id = database.Column(database.String(
         256), database.ForeignKey('user.username'), primary_key=True)
@@ -56,6 +76,8 @@ class Book(database.Model):
     summary = database.Column(database.String(256))
     genre = database.Column(database.String(256))
     image = database.Column(database.String(256))
+    author = database.Column(database.String(256))
+
 
 class Course(database.Model):
     course_id = database.Column(database.String(256), primary_key=True)
@@ -64,6 +86,8 @@ class Course(database.Model):
     subject = database.Column(database.String(256))
     semester = database.Column(database.String(256))
     year = database.Column(database.String(256))
+    image = database.Column(database.String(256))
+
 
 class Author_Book(database.Model):
     author_id = database.Column(database.String(
