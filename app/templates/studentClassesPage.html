@@ -47,10 +47,10 @@
                     <!-- Job Image and Job Title on the Left Side -->
                     <img src="../img/sample.jpg" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">{{Data[0].name}}</h1>
+                        <h1 style="margin-top: 0;">{{Prof[0].course_name}}</h1>
                         <div>
-                            <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">{{Data[0].semester + ' '+Data[0].year}}</h4>
+                            <h4 style="margin: 0;">{{Prof[0].prof_name}}</h4>
+                            <h4 style="margin: 0;">{{Prof[0].course_semester + ' '+Prof[0].course_year}}</h4>
                         </div>
                     </div>
                 </div>
@@ -74,8 +74,8 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Subject: {{Data[0].subject}} <br/>
-                                {{Data[0].summary}}
+                                Subject: {{Prof[0].course_subject}} <br/>
+                                {{Prof[0].course_summary}}
                             </p>
                         </div>
                     </div>
@@ -84,7 +84,8 @@
                         <div class="professorInfo">
                             <h3>Professor</h3>
                             <p>
-                                Description of the Professor!
+                                Email: {{Prof[0].prof_email}} <br/>
+                                {{Prof[0].prof_biography}}
                             </p>
                         </div>
                     </div>
@@ -94,7 +95,7 @@
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
                                 
-                                <a class='cardLink generic' href='studentBookProfile.html'>
+                                <a class='cardLink generic' href='/studentBookProfile.html'>
                                     <div class='card'>
                                         <div class='cardInfo'>
                                             <div id = 'information' class = 'middle_part'>
@@ -108,21 +109,6 @@
                                     </div>
                                 </a>
 
-                                <a class='cardLink generic' href='studentBookProfile.html'>
-                                    <div class='card'>
-                                        <div class='cardInfo'>
-                                            <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
-                                            </div>
-                                        </div>
-                                        <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                
 
                             </div>
                         </div>
