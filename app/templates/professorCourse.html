@@ -2,9 +2,19 @@
 <html>
     <head>
         <title>Professor Course</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/professorCourse.css" />
-        <script src="../js/myTabs.js" defer></script>
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/professorCourse.css" />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
+        <script src="../static/js/myTabs.js" defer></script>
+        <style>
+            h1 {
+                font-size: 16px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+        </style>
     </head>
     <!---  Header HTML Code --->
     <nav>
@@ -13,49 +23,51 @@
         </div>
             <ul>
                 <li>
-                    <a href="professorHome.html">
+                    <a href="url_for('views.professor_home')">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorBooks.html">
+                    <a href="url_for('views.professor_books')">
                     <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorProfile.html">
+                    <a href="url_for('views.professor_profile')">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="url_for('views.login')">
                     <div>LOGOUT</div>
                     </a>
                 </li>
             </ul>
     </nav>
+    <br><br>
     <body>
         <section>
             <!-- Student Title Section -->
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
-                    <img src="../img/sample.jpg" class="Company Logo" />
+                    <img src="{{ course_image }}" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <h1 style="margin-top: 0;">{{ course_name }}</h1>
                         <div>
-                            <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                            <h4 style="margin: 0;">{{ professor_name }}</h4>
+                            <h4 style="margin: 0;">{{ course_semester }} , {{ course_year }}</h4>
                         </div>
                     </div>
                 </div>
                 <div>
                     <a href='professorAddRemoveBooks.html'>
-                        <button type="submit" name="addOrRemove" class="addOrRemove">Add/Remove Books</button>
+                        <button type="submit" name="addOrRemove" class="addOrRemove" href="">Add/Remove Books</button>
                     </a> <!-- Applied Button on the Right Side -->
                 </div>
             </div>
             <!-- Student Header Section -->
+            <br><br>
             <div class="infoSections">
                 <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
                 <a data-tab-target="#BOOKS" class="tab">BOOKS</a>
@@ -67,7 +79,7 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Description of the Course!</br>
+                                {{ course_description }}
                             </p>
                         </div>
                     </div>
@@ -75,37 +87,23 @@
                     <div id="BOOKS" data-tab-content>
                         <div class="bookList">
                             <h3>Books</h3>
-                            <div class="cardContainer accepted">
-                                
+                             <div class="cardContainer accepted">
+                            {% for i in range(books | length) %}
                                 <a class='cardLink generic' href='professorBookProfile.html'>
                                     <div class='card'>
                                         <div class='cardImage'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                                    <img src= '{{ books[i].image }}'alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
+                                            <h1>{{ books[i].title }}</h1>
+                                            <h3>- {{ books[i].author }} -</h3>
                                         </div>
                                     </div>
                                 </a>
-
-                                <a class='cardLink generic' href='professorBookProfile.html'>
-                                    <div class='card'>
-                                        <div class='cardImage'>
-                                            <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
-                                            </div>
-                                        </div>
-                                        <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
-                                        </div>
-                                    </div>
-                                </a>
-
-
+                                <br>
+                            {% endfor %}
                             </div>
                         </div>
                     </div>
