@@ -45,117 +45,64 @@
         </section>
         <section>
             <div class = "layoutCriteria">
-                <form class = "searchCriteria">
+                <form class = "searchCriteria" name="select" id="select" method="post">
 
-                    <div class="sectionChoice">
+                    <div class="sectionChoice1">
                         <div class ="sectionTitle">Rating</div>
                         <div class="choices">
-                            <div class="select">
-                                <input type="checkbox" id="4+" name="4+" value="4+">
+                            <select class="select1" id="select1" name="select1">
+                                <option type="checkbox" id="none" name="none" value="None">
+                                <label for="none">  </label>
+                                <option type="checkbox" id="4+" name="4+" value="4+">
                                 <label for="4+">4+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="3+" name="3+" value="3+">
+                                <option type="checkbox" id="3+" name="3+" value="3+">
                                 <label for="3+">3+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2+" name="2+" value="2+">
+                                <option type="checkbox" id="2+" name="2+" value="2+">
                                 <label for="2+">2+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="1+" name="1+" value="1+">
+                                <option type="checkbox" id="1+" name="1+" value="1+">
                                 <label for="1+">1+</label>
-                            </div>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="sectionChoice">
+                    <div class="sectionChoice2">
                         <div class ="sectionTitle">Year</div>
                         <div class="choices">
-                            <div class="select">
-                                <input type="checkbox" id="2015+" name="2015+" value="2015+">
+                            <select class="select2" id="select2" name="select2">
+                                <option type="checkbox" id="None" name="None" value="None">
+                                <label for="None">  </label>
+                                <option type="checkbox" id="2015+" name="2015+" value="2015+">
                                 <label for="2015+">2015+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2010+" name="2010+" value="2010+">
+                                <option type="checkbox" id="2010+" name="2010+" value="2010+">
                                 <label for="2010+">2010+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2005+" name="2005+" value="2005+">
+                                <option type="checkbox" id="2005+" name="2005+" value="2005+">
                                 <label for="2005+">2005+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2000+" name="2000+" value="2000+">
+                                <option type="checkbox" id="2000+" name="2000+" value="2000+">
                                 <label for="2000+">2000+</label>
-                            </div>
+                            </select>
                         </div>
                     </div>
-
-                    
-                    
-                    <div class = "criteriaButton">
-                        <button type="submit" form="searchCriteria" name="submit">Submit</button>
-                    </div>
+                    <button type="submit" name="submit">Submit</button>
                 </form>
                 
                 <div class='cardContainer generic'>
-                    
+                    {%  if  (books | length) > 0%}
+                    {% for i in range(books | length) %}
                     <a class='cardLink generic' href='professorBookProfile.html'>
                         <div class='card'>
                             <div class='cardImage'>
                                 <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
+                                        <img src= '{{ books[i].image }}' alt='Book Cover' />
                                 </div>
                             </div>
                             <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
+                                <h1>Book Name: {{ books[i].title }}</h1>
+                                <h3>Author Name: {{ books[i].author }}</h3>
                             </div>
                         </div>
                     </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-                    
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </section>
