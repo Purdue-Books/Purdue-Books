@@ -12,17 +12,17 @@
     </div>
         <ul>
             <li>
-                <a href="professorHome.html">
+                <a href="/professorHome.html">
                 <div>HOME</div>
                 </a>
             </li>
             <li>
-                <a href="professorProfile.html">
+                <a href="/professorProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
             <li>
-                <a href="index.html">
+                <a href="/index.html">
                 <div>LOGOUT</div>
                 </a>
             </li>
@@ -36,11 +36,11 @@
             <div class="sectionOne">
                 <!-- File Upload -->
                 <input type="file" name="fileToUpload" id="fileToUpload" required/>
-                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
-                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
-                <input id="email" type="text" name="email" placeholder="Email" value="" />
+                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="{{ Professor.first_name }}" />
+                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="{{ Professor.last_name }}" />
+                <input id="email" type="text" name="email" placeholder="Email" value="{{ Professor.email }}" />
                 <!-- Job Description -->
-				<textarea rows="4" cols="50" type="text" name="biography" placeholder="Biography" required></textarea>
+				<textarea rows="4" cols="50" type="text" name="biography" placeholder="Biography" required>{{ Professor.biography }}</textarea>
             </div>
             <div class="sectionThree">
                 <button type="submit" name="submit" class="submit">Submit</button>

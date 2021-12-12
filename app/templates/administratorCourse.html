@@ -42,7 +42,7 @@
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
-                    <img src="../img/sample.jpg" class="Company Logo" />
+                    <img src="data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}" class="Company Logo" />
                     <div class="titles">
                         <h1 style="margin-top: 0;">{{ item.course_name }}</h1>
                         <div>
@@ -70,8 +70,7 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                {{ item.course_summary }}!</br>
-                                {{ item.prof_name }}
+                                {{ item.course_summary }}</br>
                             </p>
                         </div>
                     </div>
@@ -83,33 +82,20 @@
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
                                 
-                                <a class='cardLink generic' href='administratorBookProfile.html'>
+                                <a class='cardLink generic' href='/administratorBookProfile.html/{{ item.author_books_info[0].book_id }}'>
                                     <div class='card'>
                                         <div class='cardImage'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                                    <img src= 'data:{{ item.author_books_info[0].image.mimetype }};base64,{{ item.author_books_info[0].image.image.decode() }}' alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>{{ item.author_book.book_name }}</h1>
-                                            <h3>{{ item.author_book.author_name }}</h3>
+                                            <h1>{{ item.author_books_info[0]['book_title']}}</h1>
+                                            <h3>{{ item.author_books_info[0]['author_name']}}</h3>
                                         </div>
                                     </div>
                                 </a>
 
-                                <a class='cardLink generic' href='administratorBookProfile.html'>
-                                    <div class='card'>
-                                        <div class='cardImage'>
-                                            <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
-                                            </div>
-                                        </div>
-                                        <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
-                                        </div>
-                                    </div>
-                                </a>
 
 
                             </div>
