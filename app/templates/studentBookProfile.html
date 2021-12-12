@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Book Profile</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/studentBookProfile.css" />
-        <script src="../js/myTabs.js" defer></script>
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/studentBookProfile.css" />
+        <script src="../static/js/myTabs.js" defer></script>
     </head>
     <!--- Header HTML Code --->
     <nav>
@@ -13,27 +13,27 @@
         </div>
             <ul>
                 <li>
-                    <a href="studentHome.html">
+                    <a href="/studentHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="studentBookmarks.html">
+                    <a href="/studentBookmarks.html">
                     <div>BOOKMARKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="studentProfessors.html">
+                    <a href="/studentProfessors.html">
                     <div>PROFESSORS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="studentProfile.html">
+                    <a href="/studentProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
@@ -47,10 +47,10 @@
                     <!-- Image and Title on the Left Side -->
                     <img src="../img/sample.jpg" class="Book Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">BOOK NAME HERE</h1>
+                        <h1 style="margin-top: 0;">{{ Book[0].title }}</h1>
                         <div>
-                            <h4 style="margin: 0;">AUTHOR NAME</h4>
-                            <h4 style="margin: 0;">INFORMATION HERE</h4>
+                            <h4 style="margin: 0;">{{ Author[0].first_name + ' ' + Author[0].last_name}}</h4>
+                            <h4 style="margin: 0;">{{ Book[0].published_year }}</h4>
                         </div>
                     </div>
                 </div>
@@ -82,12 +82,8 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Pellentesque bibendum, magna id sagittis commodo, erat leo consequat nisl,
-                                sit amet lobortis est dolor vitae lectus. Donec posuere mi eu odio fringilla tincidunt. 
-                                Sed sollicitudin odio id tristique faucibus. Aenean quis dolor vulputate, imperdiet purus eget, ornare metus. 
-                                Curabitur iaculis nisi urna, nec consequat dui volutpat in. Pellentesque eget erat turpis. Suspendisse sodales 
-                                diam eu nisi tempus, eget lobortis lorem bibendum. Cras sed blandit lectus. Donec ut tincidunt mi, et dignissim magna.
+                                Genre: {{Book[0].genre}} <br/>
+                                {{ Book[0].summary }}
                             </p>
                         </div>
                     </div>
@@ -97,14 +93,11 @@
                         <div class="authorInfo">
                             <h3>Author</h3>
                             <p>
-                                Description of the Author!
+                                Email: {{Author[0].email}}<br/>
+                                Biography: {{Author[0].biography}}
                             </p>
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </section>

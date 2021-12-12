@@ -72,64 +72,22 @@
                         <button type="submit" form="searchCriteria" name="submit">Submit</button>
                     </div>
                 </form>
+                {% for item in Author_book_info %}
                 <div class='cardContainer generic'>
-                    
-                    <a class='cardLink generic' href='administratorBookProfile.html'>
+                    <a class='cardLink generic' href='/administratorBookProfile.html/{{ item.author_books_info.book_id }}'>
                         <div class='card'>
                             <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
+                                
                             </div>
                             <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
+                                <!--h1>{{ item.author_books_info['book_title']}}</h1-->
+                                <h1>book title</h1>
+                                <!--h3>{{ item.author_books_info['author_name']}}</h3-->
+                                <h3>author name</h3>
                             </div>
                         </div>
                     </a>
-
-                    <a class='cardLink generic' href='administratorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='administratorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='administratorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
+                    {% endfor %}
                        
 
                 </div>

@@ -2,42 +2,42 @@
 <html>
     <head>
         <title>Professor Profile</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/studentProfessorProfile.css" />
-        <script src="../js/myTabs.js" defer></script>
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/studentProfessorProfile.css" />
+        <script src="../static/js/myTabs.js" defer></script>
     </head>
     <!--- Header HTML Code --->
     <nav>
         <div>
             <h2>STUDENT</h2>
         </div>
-            <ul>
-                <li>
-                    <a href="studentHome.html">
-                    <div>HOME</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentBookmarks.html">
-                    <div>BOOKMARKS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentProfessors.html">
-                    <div>PROFESSORS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentProfile.html">
-                    <div>SETTINGS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                    <div>LOGOUT</div>
-                    </a>
-                </li>
-            </ul>
+        <ul>
+            <li>
+                <a href="/studentHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentBookmarks.html">
+                <div>BOOKMARKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentProfessors.html">
+                <div>PROFESSORS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
     </nav>
     <body>
         <section>
@@ -45,11 +45,11 @@
             <div class="Title">
                 <div class="leftSide">
                     <!-- Image and Title on the Left Side -->
-                    <img src="../img/sample.jpg" class="Book Logo" />
+                    <img src="ask isha" class="Prof Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">PROFESSOR NAME HERE</h1>
+                        <h1 style="margin-top: 0;">{{Data[0].first_name + ' ' + Data[0].last_name}}</h1>
                         <div>
-                            <h4 style="margin: 0;">PROFESSOR EMAIL HERE</h4>
+                            <h4 style="margin: 0;">{{Data[0].email}}</h4>
                         </div>
                     </div>
                 </div>
@@ -65,12 +65,7 @@
                     <div id="BIOGRAPHY" data-tab-content class="active">
                         <div class="descriptionInfo">
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Pellentesque bibendum, magna id sagittis commodo, erat leo consequat nisl,
-                                sit amet lobortis est dolor vitae lectus. Donec posuere mi eu odio fringilla tincidunt. 
-                                Sed sollicitudin odio id tristique faucibus. Aenean quis dolor vulputate, imperdiet purus eget, ornare metus. 
-                                Curabitur iaculis nisi urna, nec consequat dui volutpat in. Pellentesque eget erat turpis. Suspendisse sodales 
-                                diam eu nisi tempus, eget lobortis lorem bibendum. Cras sed blandit lectus. Donec ut tincidunt mi, et dignissim magna.
+                                {{Data[0].biography}}
                             </p>
                         </div>
                     </div>  

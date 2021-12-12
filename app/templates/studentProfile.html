@@ -10,43 +10,43 @@
     <div>
         <h2>STUDENT</h2>
     </div>
-        <ul>
-            <li>
-                <a href="studentHome.html">
-                <div>HOME</div>
-                </a>
-            </li>
-            <li>
-                <a href="studentBookmarks.html">
-                <div>BOOKMARKS</div>
-                </a>
-            </li>
-            <li>
-                <a href="studentProfessors.html">
-                <div>PROFESSORS</div>
-                </a>
-            </li>
-            <li>
-                <a href="studentProfile.html">
-                <div>SETTINGS</div>
-                </a>
-            </li>
-            <li>
-                <a href="index.html">
-                <div>LOGOUT</div>
-                </a>
-            </li>
-        </ul>
+    <ul>
+        <li>
+            <a href="/studentHome.html">
+            <div>HOME</div>
+            </a>
+        </li>
+        <li>
+            <a href="/studentBookmarks.html">
+            <div>BOOKMARKS</div>
+            </a>
+        </li>
+        <li>
+            <a href="/studentProfessors.html">
+            <div>PROFESSORS</div>
+            </a>
+        </li>
+        <li>
+            <a href="/studentProfile.html">
+            <div>SETTINGS</div>
+            </a>
+        </li>
+        <li>
+            <a href="/index.html">
+            <div>LOGOUT</div>
+            </a>
+        </li>
+    </ul>
 </nav>
     <body>
           <section>
             <h2>Profile</h2>
-            <form name="myForm" action="php/student_php/studentDetails.php" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data"></form>
+            <form name="myForm" action="" onsubmit="return validateForm()" method="POST" enctype="multipart/form-data">
             <div class="sectionOne">
                 <!-- File Upload -->
                 <input type="file" name="fileToUpload" id="fileToUpload" required/>
-                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
-                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
+                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="{{studentData.first_name}}" />
+                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="{{studentData.last_name}}" />
                 <!-- Major -->
                 <div class="select">
                     <select type="text" name="major" id="major">
@@ -55,7 +55,7 @@
                     </select>
                 </div>
                 <!-- Major End -->
-                <input id="email" type="text" name="email" placeholder="Email" value="" />
+                <input id="email" type="text" name="email" placeholder="Email" value="{{studentData.email}}" />
                 <div class="select">
                     <select type="text" name="gradeyear" id="gradeYearslct">
                       <option selected disabled>Grade Year</option>
