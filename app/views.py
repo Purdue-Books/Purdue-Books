@@ -47,7 +47,7 @@ def book_table(data):
     return table
 
 
-###def get_book(name):
+def get_book(name):
     get_book_name_sql = "SELECT * FROM mytable WHERE name LIKE "
     get_book_sql = get_book_name_sql + "'%" + name + "%' "
     get_book_sql = get_book_sql + "OR author LIKE " + "'%" + name + "%' "
@@ -119,7 +119,6 @@ def get_authors_books():
     db_cursor.execute(get_authors_books)
     authors_books = []
     for author_book in db_cursor.fetchall():
-        image = Image.query.filter_by(image_id=book[5]).first()
         authors_books.append({"author_id": author_book[0], "book_id": author_book[1]})
     return authors_books
 
@@ -319,7 +318,6 @@ def create_course():
         semester = request.form.get("semester")
         year = request.form.get("year")
         professor = request.form.get("professor")
-        print("professor:"+ professor)
         new_course = Course(course_id=course_id, name=name, summary=summary, subject=subject, semester=semester, year=year)
         database.session.add(new_course)
         database.session.commit()
@@ -327,8 +325,6 @@ def create_course():
         database.session.add(prof_course)
         database.session.commit()
         professors_courses = get_assigned_professor_course()
-        print("professors_courses")
-        print(*professors_courses)
         professors_courses_info = []
         for professor_course in professors_courses:
             professor = get_professor_by_id(prof_id=professor_course['prof_id'])
@@ -346,17 +342,9 @@ def create_course():
 def administrator_books():
     author_books_info = []
     books = get_books()
-    print(books)
-    print(id)
     for book in books:
-        print(book)
-        print(book['book_id'])
         author_book = get_author_by_book_id(book['book_id'])
-        print(*author_book)
         author_books_info.append({"author_books_info": author_book})
-    print("blahah 1")
-    print(*author_books_info)
-    print("blahah 2")
     return render_template('administratorBooks.html', Author_book_info=author_books_info)
 
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
@@ -365,18 +353,9 @@ def administrator_course(id):
     professors_courses_info = []
     author_books_info = []
     books = get_book_professor_course(id, professors_courses[0]['prof_id'])
-    print(books)
-    print(id)
-    print(professors_courses[0]['prof_id'])
     for book in books:
-        print(book)
-        print(book['book_id'])
         author_book = get_author_by_book_id(book['book_id'])
-        print(*author_book)
         author_books_info.append({"author_books_info": author_book})
-    print("blah 1")
-    print(*author_books_info)
-    print("blah 2")
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
@@ -462,7 +441,6 @@ def edit_course(id):
     result = get_course_by_id(id)
     professors = get_professors()
     selected_prof = get_professor_by_course_id(id)
-    print(selected_prof)
     return render_template('/administratorCourseEdit.html', Course=result[0], Professor=professors, Selected_prof=selected_prof[0])
 
 @views.route('/deleteCourse/<string:id>', methods=['POST', 'GET'])
