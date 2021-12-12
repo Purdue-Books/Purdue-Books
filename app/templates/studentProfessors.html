@@ -15,22 +15,22 @@
         </div>
         <ul>
             <li>
-                <a href="/studentHome.html/{{ id }}">
+                <a href="/studentHome.html">
                 <div>HOME</div>
                 </a>
             </li>
             <li>
-                <a href="/studentBookmarks.html/{{ id }}">
+                <a href="/studentBookmarks.html">
                 <div>BOOKMARKS</div>
                 </a>
             </li>
             <li>
-                <a href="/studentProfessors.html/{{ id }}">
+                <a href="/studentProfessors.html">
                 <div>PROFESSORS</div>
                 </a>
             </li>
             <li>
-                <a href="/studentProfile.html/{{ id }}">
+                <a href="/studentProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
@@ -98,58 +98,20 @@
                 </form>
                 
                 <div class='cardContainer generic'>
-                    
-                    <a class='cardLink generic' href='studentProfessorProfile.html'>
+                    {% for item in Data %}
+                    <a class='cardLink generic' href='studentProfessorProfile.html/{{item.prof_id}}'>
                         <div class='card'>
                             <div class='cardImage'>
                                 <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Professor' />
+                                        <img src= '' alt='Professor' />
                                 </div>
                             </div>
                             <div class='cardInfo'>
-                                <h1>Professors Name</h1>
+                                <h1>{{item.first_name+' '+item.last_name}}</h1>
                             </div>
                         </div>
                     </a>
-
-                    <a class='cardLink generic' href='studentProfessorProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Professor' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Professors Name</h1>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='studentProfessorProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Professor' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Professors Name</h1>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='studentProfessorProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Professor' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Professors Name</h1>
-                            </div>
-                        </div>
-                    </a>
+                    {% endfor %}
                     
                 </div>
             </div>

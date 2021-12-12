@@ -11,33 +11,33 @@
         <div>
             <h2>STUDENT</h2>
         </div>
-            <ul>
-                <li>
-                    <a href="studentHome.html">
-                    <div>HOME</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentBookmarks.html">
-                    <div>BOOKMARKS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentProfessors.html">
-                    <div>PROFESSORS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="studentProfile.html">
-                    <div>SETTINGS</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="/index.html">
-                    <div>LOGOUT</div>
-                    </a>
-                </li>
-            </ul>
+        <ul>
+            <li>
+                <a href="/studentHome.html">
+                <div>HOME</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentBookmarks.html">
+                <div>BOOKMARKS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentProfessors.html">
+                <div>PROFESSORS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/studentProfile.html">
+                <div>SETTINGS</div>
+                </a>
+            </li>
+            <li>
+                <a href="/index.html">
+                <div>LOGOUT</div>
+                </a>
+            </li>
+        </ul>
     </nav>
     <body>
         <section>
@@ -47,10 +47,10 @@
                     <!-- Job Image and Job Title on the Left Side -->
                     <img src="../img/sample.jpg" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <h1 style="margin-top: 0;">{{Data[0].name}}</h1>
                         <div>
                             <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                            <h4 style="margin: 0;">{{Data[0].semester + ' '+Data[0].year}}</h4>
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,8 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Description of the Course!
+                                Subject: {{Data[0].subject}} <br/>
+                                {{Data[0].summary}}
                             </p>
                         </div>
                     </div>

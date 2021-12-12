@@ -122,7 +122,7 @@ def get_professors():
     db_cursor.execute(get_professors)
     professors = []
     for professor in db_cursor.fetchall():
-        professors.append({"prof_id": professor[0], "first_name": professor[2],
+        professors.append({"prof_id": professor[0], "image": professor[1], "first_name": professor[2],
                      "last_name": professor[3], "biography": professor[4], "email": professor[5]})
     return professors
 
@@ -365,16 +365,17 @@ def professor_home():
     return render_template('professorHome.html')
 
 
-@views.route('/studentHome.html/<string:id>')
+@views.route('/studentHome.html/')
 @login_required
-def student_home(id):
-    return render_template('studentHome.html', id = id)
+def student_home():
+    result = get_courses()
+    return render_template('studentHome.html', Data=result)
 
 
-@views.route('/studentBookmarks.html/<string:id>')
+@views.route('/studentBookmarks.html/')
 @login_required
-def student_bookmarks(id):
-    return render_template('studentBookmarks.html', id = id)
+def student_bookmarks():
+    return render_template('studentBookmarks.html')
 
 @views.route('/studentBookProfile.html')
 @login_required
@@ -384,12 +385,14 @@ def student_book_profile():
 @views.route('/studentClassesPage.html/<string:id>')
 @login_required
 def student_classes_page(id):
-    return render_template('studentClassesPage.html', id=id)
+    result = get_course_by_id(id)
+    return render_template('studentClassesPage.html', Data=result)
 
-@views.route('/studentProfessors.html/<string:id>')
+@views.route('/studentProfessors.html/')
 @login_required
-def student_professors(id):
-    return render_template('studentProfessors.html', id=id)
+def student_professors():
+    result = get_professors()
+    return render_template('studentProfessors.html', Data=result)
 
 
 @views.route('/studentProfessorsProfile.html')
@@ -477,27 +480,42 @@ def professor_profile():
     return render_template('professorProfile.html', Professor=result[0])
 
 
-@views.route('/studentProfile.html/<string:id>', methods=['GET', 'POST'])
+@views.route('/studentProfile.html/', methods=['GET', 'POST'])
 @login_required
-def student_profile(id):
-    result = get_student_by_id(id)
-    if len(result) > 0:
-        return render_template('studentProfile.html', id=id, studentData = '')
-    if request.method == 'POST':
+def student_profile():
+    result = get_student_by_id(current_user.get_id())
+    if request.method == 'POST' and len(result) == 0:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
         major = request.form.get('major')
         email = request.form.get('email')
         gradeyear = request.form.get('gradeyear')
-
         new_stud = Student(stud_id=stud_id, first_name=firstname,
                            last_name=lastname, major=major, email=email, grade_year=gradeyear)
         database.session.add(new_stud)
         database.session.commit()
         return redirect(url_for('views.student_home', id = id))
-
-    return render_template('studentProfile.html', id=id, studentData = result[0])
+    if len(result) == 0:
+        return render_template('studentProfile.html', id=id, studentData = '')
+    if request.method == 'POST' and len(result) == 1:
+        stud_id = current_user.get_id()
+        firstname = request.form.get("firstname")
+        lastname = request.form.get('lastname')
+        major = request.form.get('major')
+        email = request.form.get('email')
+        gradeyear = request.form.get('gradeyear')
+        student = Student.query.filter_by(stud_id=result[0].get('stud_id')).first()
+        student.first_name = firstname
+        student.last_name = lastname
+        student.major = major
+        student.email = email
+        student.grade_year = gradeyear
+        database.session.commit() 
+        database.session.flush()
+        return student_home(stud_id)
+    
+    return render_template('studentProfile.html', studentData = result[0])
 
 def get_student_by_id(student_id):
     get_student_by_id_sql = "SELECT * FROM student b WHERE b.stud_id = \"" + student_id + "\";"

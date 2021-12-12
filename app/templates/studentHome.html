@@ -15,22 +15,22 @@
         </div>
             <ul>
                 <li>
-                    <a href="/studentHome.html/{{ id }}">
+                    <a href="/studentHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="/studentBookmarks.html/{{ id }}">
+                    <a href="/studentBookmarks.html">
                     <div>BOOKMARKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="/studentProfessors.html/{{ id }}">
+                    <a href="/studentProfessors.html">
                     <div>PROFESSORS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="/studentProfile.html/{{ id }}">
+                    <a href="/studentProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
@@ -79,27 +79,17 @@
                 
                 <div class='cardContainer generic'>
                     
-                    <a class='cardLink generic' href='studentClassesPage.html'>
+                    {% for item in Data %}
+                    <a class='cardLink generic' href='/studentClassesPage.html/{{ item.course_id }}'>
                         <div class='card'>
                             <div class='cardInfo'>
-                                <h1>Class Names</h1>
-                                <h3>Professor Name</h3>                         
-                                <h4>Semester</h4>
+                                <h1>{{item.name}}</h1>
+                                <h3>{{item.name}}</h3>                         
+                                <h4>{{item.semester}}</h4>
                             </div>
                         </div>
                     </a>
-
-                    <a class='cardLink generic' href='studentClassesPage.html'>
-                        <div class='card'>
-                            <div class='cardInfo'>
-                                <h1>Class Names</h1>
-                                <h3>Professor Name</h3>                         
-                                <h4>Semester</h4>
-                            </div>
-                        </div>
-                    </a>
-
-                
+                    {% endfor %}
                     
                 </div>
             </div>
