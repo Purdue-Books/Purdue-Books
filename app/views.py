@@ -227,6 +227,35 @@ def get_check_course_student(stud_id, course_id):
         checker.append({"count": check[0]})
     return checker
 
+def get_course_by_genre(genre):
+    get_course_id_and_prof_id_by_genre_sql = "(SELECT course_id, prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
+    
+    get_course_info = "(SELECT c.course_id, t1.prof_id, c.name, c.semester, c.year FROM course c INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t1 ON c.course_id = t1.course_id)"
+    get_prof_course_info = "(SELECT t2.course_id, p.prof_id, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t2 ON p.prof_id = t2.prof_id)"
+    
+    get_combo_prof_course_info = "SELECT pci.first_name, pci.last_name, gci.name, gci.semester, gci.year FROM " + get_course_info + "gci INNER JOIN " + get_prof_course_info + " pci ON gci.course_id = pci.course_id;"
+
+    db_cursor.execute(get_combo_prof_course_info)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"first_name": check[0], "last_name": check[1], "course_name": check[2], "course_semester": check[3], "course_year": check[4]})
+    return checker
+
+def get_professor_by_genre_and_semester(genre,semester):
+    get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
+    
+    get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
+    get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+    
+
+    db_cursor.execute(get_prof_course_info)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"image": check[0], "first_name": check[1], "last_name": check[2]})
+    return checker
+
+
+
 views = Blueprint('views', __name__)
 
 @login_required
@@ -471,17 +500,29 @@ def professor_home():
     return render_template('professorHome.html')
 
 
-@views.route('/studentHome.html/')
+@views.route('/studentHome.html/', methods=['POST', 'GET'])
 @login_required
 def student_home():
-    results = get_courses()
-    professors_courses_info = []
-    for result in results:
-        professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
-        for professor_course in professors_courses:
-            professor = get_professor_by_id(prof_id=professor_course['prof_id'])
-            course = get_course_by_id(course_id=professor_course['course_id'])
-            professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+    genre = ''
+    if request.method == 'POST':
+        genre = request.form.get("genre")
+
+    if genre == '' and len(genre) == 0:
+        results = get_courses()
+        professors_courses_info = []
+        for result in results:
+            professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
+            for professor_course in professors_courses:
+                professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+                course = get_course_by_id(course_id=professor_course['course_id'])
+                professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+    else:
+        results = get_course_by_genre(genre)
+        professors_courses_info = []
+        for result in results:     
+            professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year']})
+   
+        
     return render_template('studentHome.html', Data=professors_courses_info)
 
 
@@ -537,10 +578,19 @@ def student_classes_page(id):
             
     return render_template('studentClassesPage.html', Prof=professors_courses_info, Book=bookList_info, check = checker[0])
 
-@views.route('/studentProfessors.html/')
+@views.route('/studentProfessors.html/', methods=['POST', 'GET'])
 @login_required
 def student_professors():
     result = get_professors()
+
+    if request.method == 'POST':
+        genre = request.form.get("genre")
+        semester = request.form.get("semester")
+        if genre != '' and semester != '':
+            result = get_professor_by_genre_and_semester(genre, semester)
+        elif genre != '' and semester == '':
+            result = get_professor_by_genre_and_semester(genre, semester)
+
     return render_template('studentProfessors.html', Data=result)
 
 
