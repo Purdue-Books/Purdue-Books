@@ -93,7 +93,7 @@
                         <div class='card'>
                             <div class='cardImage'>
                                 <div id = 'information' class = 'middle_part'>
-                                        <img src= '' alt='Professor' />
+                                        <img src= 'data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Professor' />
                                 </div>
                             </div>
                             <div class='cardInfo'>

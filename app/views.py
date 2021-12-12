@@ -164,7 +164,8 @@ def get_professors():
     db_cursor.execute(get_professors)
     professors = []
     for professor in db_cursor.fetchall():
-        professors.append({"prof_id": professor[0], "image": professor[1], "first_name": professor[2],
+        image = Image.query.filter_by(image_id=professor[1]).first()
+        professors.append({"prof_id": professor[0], "image": image, "first_name": professor[2],
                      "last_name": professor[3], "biography": professor[4], "email": professor[5]})
     return professors
 
