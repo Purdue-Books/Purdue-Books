@@ -203,6 +203,30 @@ def get_administrator_by_id(sch_id):
         administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
     return administrators
 
+def get_course_by_student_id(stud_id):
+    get_course_by_student_id_sql = "SELECT course_id FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\";"
+    db_cursor.execute(get_course_by_student_id_sql)
+    courses = []
+    for course in db_cursor.fetchall():
+        courses.append({"course_id": course[0]})
+    return courses
+
+def get_values_course_student(stud_id, course_id):
+    get_values_course_student = "SELECT stud_id, course_id AS count FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\" AND sc.course_id = \"" + course_id + "\";"
+    db_cursor.execute(get_values_course_student)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"stud_id": check[0], "course_id": check[1]})
+    return checker
+
+def get_check_course_student(stud_id, course_id):
+    get_check_course_student_sql = "SELECT COUNT(*) AS count FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\" AND sc.course_id = \"" + course_id + "\";"
+    db_cursor.execute(get_check_course_student_sql)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"count": check[0]})
+    return checker
+
 views = Blueprint('views', __name__)
 
 @login_required
@@ -464,24 +488,54 @@ def student_home():
 @views.route('/studentBookmarks.html/')
 @login_required
 def student_bookmarks():
-    return render_template('studentBookmarks.html')
+    courses = get_course_by_student_id(current_user.get_id())
+    professors_courses_info = []
+    for course in courses:
+        course_info = get_course_by_id(course['course_id'])
+        prof_info = get_professor_by_course_id(course['course_id'])
+        professors_courses_info.append({"prof_name": prof_info[0]['first_name'] + " " + prof_info[0]['last_name'], "course_name": course_info[0]['name'], "course_semester": course_info[0]['semester'], "course_year": course_info[0]['year'], "course_id": course_info[0]['course_id']})
+    return render_template('studentBookmarks.html', Data=professors_courses_info)
 
-@views.route('/studentBookProfile.html')
+@views.route('/studentBookProfile.html/<string:id>')
 @login_required
-def student_book_profile():
-    return render_template('studentBookProfile.html')
+def student_book_profile(id):
+    bookResult = get_book_by_id(book_id=id)
+    authorId = get_author_by_book_id(book_id=id)
+    authorResult = get_author_by_id(authorId[0]['author_id'])
+    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult )
 
 @views.route('/studentClassesPage.html/<string:id>', methods=['GET', 'POST'])
 @login_required
 def student_classes_page(id):
-    course_info = get_course_by_id(id)
     professors_courses = get_assigned_professor_course_by_course_id(id)
     professors_courses_info = []
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "image": professor[0]['image'], "prof_biography": professor[0]['biography'], "prof_email": professor[0]['email'],"course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_subject": course[0]['subject']})
-    return render_template('studentClassesPage.html', Prof=professors_courses_info)
+        bookList_info = []
+        bookList = get_book_professor_course(professor_course['course_id'], professor_course['prof_id'])
+        for book in bookList:
+            bookInfo = get_book_by_id(book['book_id'])
+            authorInfo = get_author_by_book_id(book['book_id'])
+            bookList_info.append({"book_id": bookInfo[0]['book_id'], "book_title": bookInfo[0]['title'], "author_name": authorInfo[0]['author_name'], "image": bookInfo[0]['image']})
+
+    checker = get_check_course_student(current_user.get_id(), id)
+
+    if request.method == 'POST':
+        formResult = request.form.get('submit')
+        if formResult == 'accept':
+            new_student_course = Student_Course(stud_id = current_user.get_id(), course_id = id)
+            database.session.add(new_student_course)
+            database.session.commit()
+            return redirect(url_for('views.student_bookmarks'))
+        elif formResult == 'reject':
+            Student_Course.query.filter_by(stud_id = current_user.get_id(), course_id = id).delete()
+            database.session.commit()
+            database.session.flush()
+            return redirect(url_for('views.student_bookmarks'))
+            
+    return render_template('studentClassesPage.html', Prof=professors_courses_info, Book=bookList_info, check = checker[0])
 
 @views.route('/studentProfessors.html/')
 @login_required
@@ -591,9 +645,9 @@ def student_profile():
                            last_name=lastname, major=major, email=email, grade_year=gradeyear)
         database.session.add(new_stud)
         database.session.commit()
-        return redirect(url_for('views.student_home', id = id))
+        return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        return render_template('studentProfile.html', id=id, studentData = '')
+        return render_template('studentProfile.html', studentData = '')
     if request.method == 'POST' and len(result) == 1:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -638,7 +692,7 @@ def login():
                 print("SUCCESS")
                 login_user(user, remember=True)
                 if user.role == "student":
-                    return redirect(url_for('views.student_home', id = username))
+                    return redirect(url_for('views.student_home'))
                 if user.role == "professor":
                     return redirect(url_for('views.professor_home'))
                 if user.role == "author":
@@ -678,7 +732,7 @@ def sign_up():
             database.session.commit()
             login_user(new_user, remember=True)
             if role_type == "student":
-                return redirect(url_for('views.student_profile', id = username))
+                return redirect(url_for('views.student_profile'))
             if role_type == "professor":
                 return redirect(url_for('views.professor_profile'))
             if role_type == "author":
