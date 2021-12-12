@@ -11,21 +11,25 @@
         <h2>AUTHOR</h2>
     </div>
         <ul>
+            {% if test != 0 %}
             <li>
                 <a href="/authorHome.html">
                 <div>HOME</div>
                 </a>
             </li>
+            {% endif %}
             <li>
                 <a href="/authorProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
+            {% if test != 0 %}
             <li>
                 <a href="/index.html">
                 <div>LOGOUT</div>
                 </a>
             </li>
+            {% endif %}
         </ul>
 </nav>
     <body>

@@ -243,12 +243,12 @@ def get_course_by_genre(genre):
     get_course_info = "(SELECT c.course_id, t1.prof_id, c.name, c.semester, c.year FROM course c INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t1 ON c.course_id = t1.course_id)"
     get_prof_course_info = "(SELECT t2.course_id, p.prof_id, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t2 ON p.prof_id = t2.prof_id)"
     
-    get_combo_prof_course_info = "SELECT pci.first_name, pci.last_name, gci.name, gci.semester, gci.year FROM " + get_course_info + "gci INNER JOIN " + get_prof_course_info + " pci ON gci.course_id = pci.course_id;"
+    get_combo_prof_course_info = "SELECT pci.first_name, pci.last_name, gci.name, gci.semester, gci.year, gci.course_id FROM " + get_course_info + "gci INNER JOIN " + get_prof_course_info + " pci ON gci.course_id = pci.course_id;"
 
     db_cursor.execute(get_combo_prof_course_info)
     checker = []
     for check in db_cursor.fetchall():
-        checker.append({"first_name": check[0], "last_name": check[1], "course_name": check[2], "course_semester": check[3], "course_year": check[4]})
+        checker.append({"first_name": check[0], "last_name": check[1], "course_name": check[2], "course_semester": check[3], "course_year": check[4], "course_id": check[5]})
     return checker
 
 def get_professor_by_genre_and_semester(genre,semester):
@@ -271,7 +271,8 @@ def get_professor_by_genre_and_semester(genre,semester):
     db_cursor.execute(get_prof_course_info)
     checker = []
     for check in db_cursor.fetchall():
-        checker.append({"image": check[0], "first_name": check[1], "last_name": check[2]})
+        image = Image.query.filter_by(image_id=check[0]).first()
+        checker.append({"image": image, "first_name": check[1], "last_name": check[2]})
     return checker
 
 
@@ -538,7 +539,7 @@ def student_home():
         results = get_course_by_genre(genre)
         professors_courses_info = []
         for result in results:     
-            professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year']})
+            professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year'], "course_id": result['course_id']})
    
         
     return render_template('studentHome.html', Data=professors_courses_info)
@@ -571,6 +572,7 @@ def student_classes_page(id):
     for professor_course in professors_courses:
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
+
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "image": professor[0]['image'], "prof_biography": professor[0]['biography'], "prof_email": professor[0]['email'],"course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_subject": course[0]['subject']})
         bookList_info = []
         bookList = get_book_professor_course(professor_course['course_id'], professor_course['prof_id'])
@@ -603,9 +605,9 @@ def student_professors():
     if request.method == 'POST':
         genre = request.form.get("genre")
         semester = request.form.get("semester")
-        result = get_professor_by_genre_and_semester(genre, semester)
+        if genre != '' or semester != '':
+            result = get_professor_by_genre_and_semester(genre, semester)
         
-
     return render_template('studentProfessors.html', Data=result)
 
 
@@ -614,8 +616,6 @@ def student_professors():
 def student_professors_profile(id):
     result = get_professor_by_id(id)
     return render_template('studentProfessorProfile.html', Data=result)
-
-
 
 
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
@@ -640,6 +640,7 @@ def admin_profile():
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
 @login_required
 def author_profile():
+    none = 1
     if request.method == 'POST':
         prof_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -664,7 +665,8 @@ def author_profile():
     result = get_author_by_id(current_user.get_id())
     if len(result) == 0:
         result.append({"author_id": "", "first_name": "", "last_name": "", "email": "", "biography": "", "image": ""})
-    return render_template('authorProfile.html', Author=result[0])
+        none = 0
+    return render_template('authorProfile.html', Author=result[0], test = none)
 
 
 @views.route('/professorProfile.html', methods=['GET', 'POST'])
@@ -700,6 +702,7 @@ def professor_profile():
 @views.route('/studentProfile.html/', methods=['GET', 'POST'])
 @login_required
 def student_profile():
+    none = 0
     result = get_student_by_id(current_user.get_id())
     if request.method == 'POST' and len(result) == 0:
         stud_id = current_user.get_id()
@@ -714,7 +717,7 @@ def student_profile():
         database.session.commit()
         return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        return render_template('studentProfile.html', studentData = '')
+        return render_template('studentProfile.html', studentData = '', test = none)
     if request.method == 'POST' and len(result) == 1:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -730,9 +733,10 @@ def student_profile():
         student.grade_year = gradeyear
         database.session.commit() 
         database.session.flush()
-        return student_home(stud_id)
+        return redirect(url_for('views.student_home'))
     
-    return render_template('studentProfile.html', studentData = result[0])
+    none = 1
+    return render_template('studentProfile.html', studentData = result[0], test = none)
 
 def get_student_by_id(student_id):
     get_student_by_id_sql = "SELECT * FROM student b WHERE b.stud_id = \"" + student_id + "\";"
