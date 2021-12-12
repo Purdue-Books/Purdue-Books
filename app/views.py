@@ -274,6 +274,13 @@ def get_professor_by_genre_and_semester(genre,semester):
         checker.append({"image": image, "first_name": check[1], "last_name": check[2]})
     return checker
 
+def get_check_rating_by_student_and_book(stud_id, book_id):
+    get_check_rating_by_student_and_book_sql = "SELECT COUNT(rating) FROM rating r WHERE r.stud_id = \"" + stud_id + "\"AND r.book_id = \"" + book_id + "\";"
+    db_cursor.execute(get_check_rating_by_student_and_book_sql)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"amount": check[0]})
+    return checker
 
 
 views = Blueprint('views', __name__)
@@ -500,25 +507,25 @@ def professor_home():
 @views.route('/studentHome.html/', methods=['POST', 'GET'])
 @login_required
 def student_home():
+    results = get_courses()
+    professors_courses_info = []
+    for result in results:
+        professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
+        for professor_course in professors_courses:
+            professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+            course = get_course_by_id(course_id=professor_course['course_id'])
+            professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+    
+
     genre = ''
     if request.method == 'POST':
         genre = request.form.get("genre")
-
-    if genre == '' and len(genre) == 0:
-        results = get_courses()
-        professors_courses_info = []
-        for result in results:
-            professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
-            for professor_course in professors_courses:
-                professor = get_professor_by_id(prof_id=professor_course['prof_id'])
-                course = get_course_by_id(course_id=professor_course['course_id'])
-                professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
-    else:
         results = get_course_by_genre(genre)
         professors_courses_info = []
         for result in results:     
             professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year'], "course_id": result['course_id']})
-   
+  
+    
         
     return render_template('studentHome.html', Data=professors_courses_info)
 
@@ -540,16 +547,26 @@ def student_book_profile(id):
     bookResult = get_book_by_id(book_id=id)
     authorId = get_author_by_book_id(book_id=id)
     authorResult = get_author_by_id(authorId[0]['author_id'])
-    test = ''
-    '''
-    if request.method == 'GET':
+    amount = ''
+    
+    if request.method == 'POST':
+        rate = get_check_rating_by_student_and_book(current_user.get_id(), id)
         amount = request.form.get("rating")
-        test = type(int(amount))
-        rates = Rating(stud_id = current_user.get_id(), book_id = id, rating = amount)
-        database.session.add(rates)
-        database.session.commit()
-    '''
-    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult, rating = test)
+        if rate == 0:
+            if amount != '':
+                rates = Rating(stud_id = current_user.get_id(), book_id = id, rating = int(amount))
+                database.session.add(rates)
+                database.session.commit()
+                return redirect(url_for('views.student_home'))
+        else:
+            if amount != '':
+                Rating.query.filter_by(stud_id = current_user.get_id(), book_id = id).delete()
+                rates = Rating(stud_id = current_user.get_id(), book_id = id, rating = int(amount))
+                database.session.add(rates)
+                database.session.commit()
+                return redirect(url_for('views.student_home'))
+    
+    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult)
 
 @views.route('/studentClassesPage.html/<string:id>', methods=['GET', 'POST'])
 @login_required
