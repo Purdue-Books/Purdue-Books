@@ -222,7 +222,7 @@ def get_values_course_student(stud_id, course_id):
 
 def get_check_course_student(stud_id, course_id):
     get_check_course_student_sql = "SELECT COUNT(*) AS count FROM student__course sc WHERE sc.stud_id = %s AND sc.course_id = %s;"
-    prep_cursor.execute(get_check_course_student_sql, stud_id, course_id)
+    prep_cursor.execute(get_check_course_student_sql, (stud_id, course_id))
     checker = []
     for check in prep_cursor.fetchall():
         checker.append({"count": check[0]})
