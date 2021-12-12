@@ -36,20 +36,26 @@
             <!-- Search Bar with JavaScript -->
             <h4>Assigned Courses</h4>
             <!-- refereshPage() the mySearch function runs based on the specific events-->
-            <input type="search" id="generic" name="search" onsearch="mySearchGeneric()" onblur="refreshPageGeneric()" placeholder="Search Courses" />
+            <form method="post">
+            <input type="search" id="generic" name="search" onblur="refreshPageGeneric()" placeholder="Search Courses" />
+            </form>
         </section>
-        <section>
-            <div class='cardContainer generic'>
-                        <a class='cardLink generic' href='professorCourse.html'>
-                            <div class='card'>
-                                <div class='cardInfo'>
-                                    <h1>Course Name</h1>
-                                    <h3>Semester</h3>
+            <section>
+                <div class='cardContainer generic'>
+                {% if (courses | length) > 0  %}
+                {%  for i in range(((courses | length)))  %}
+                    <a class='cardLink generic' href='/professorCourse.html/{{ courses[i].course_id }}'>
+                                <div class='card'>
+                                    <div class='cardInfo'>
+                                        <h1>{{ courses[i].name }}</h1>
+                                        <h3>{{ courses[i].semester }}</h3>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-            </div>
-        </section>
+                            </a>
+                {%  endfor %}
+                {% endif %}
+                </div>
+            </section>
         <!-- Shows the Page Numbers -->
 	    <div id="pagination-container-generic" class = 'bottom_Section'></div> 
     </body>
