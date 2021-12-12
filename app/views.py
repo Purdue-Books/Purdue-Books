@@ -23,6 +23,7 @@ except connector.Error as err:
     print("ERROR")
 
 db_cursor = db_connection.cursor(buffered=True)
+prep_cursor = db_connection.cursor(prepared=True)
 db_cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
 db_cursor.execute("USE Purdue_Books")
 
@@ -62,31 +63,30 @@ def get_book(name):
 
 
 def get_books_by_author(author_id):
-    get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE \"" + \
-        author_id + "\" = ab.author_id AND ab.book_id = b.book_id;"
-    db_cursor.execute(get_book_by_author_sql)
+    get_book_by_author_sql = "SELECT * FROM book b, author__book ab WHERE %s = ab.author_id AND ab.book_id = b.book_id;"
+    prep_cursor.execute(get_book_by_author_sql, (author_id, ))
     books = []
-    for book in db_cursor.fetchall():
+    for book in prep_cursor.fetchall():
         result = get_book_by_id(book[0])
         books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
                      "summary": book[3], "genre": book[4], "image": result[0].get('image'), "author_id": book[6]})
     return books
 
 def get_author_by_id(author_id): 
-    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = \"" + author_id + "\";"
-    db_cursor.execute(get_author_by_id_sql)
+    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = %s;"
+    prep_cursor.execute(get_author_by_id_sql, (author_id, ))
     authors = []
-    for author in db_cursor.fetchall():
+    for author in prep_cursor.fetchall():
         authors.append({"author_id": author[0], "first_name": author[1], "last_name": author[2],
                      "biography": author[3], "email": author[4]})
     return authors    
 
 
 def get_author_by_book_id(book_id):
-    get_author_by_book_id_sql = "SELECT * FROM author__book ab WHERE \"" + book_id + "\" = ab.book_id;"
-    db_cursor.execute(get_author_by_book_id_sql)
+    get_author_by_book_id_sql = "SELECT * FROM author__book ab WHERE %s = ab.book_id;"
+    prep_cursor.execute(get_author_by_book_id_sql, (book_id, ))
     author_books = []
-    for author_book in db_cursor.fetchall():
+    for author_book in prep_cursor.fetchall():
         author = get_author_by_id(author_book[0])
         book = get_book_by_id(author_book[1])
         #image = Image.query.filter_by(image_id=book[5]).first()
@@ -95,10 +95,10 @@ def get_author_by_book_id(book_id):
     return author_books
 
 def get_book_by_id(book_id):
-    get_book_by_id_sql = "SELECT * FROM book b WHERE b.book_id = \"" + book_id + "\";"
-    db_cursor.execute(get_book_by_id_sql)
+    get_book_by_id_sql = "SELECT * FROM book b WHERE b.book_id = %s";
+    prep_cursor.execute(get_book_by_id_sql, (book_id, ))
     books = []
-    for book in db_cursor.fetchall():
+    for book in prep_cursor.fetchall():
         image = Image.query.filter_by(image_id=book[5]).first()
         books.append({"book_id": book[0], "title": book[1], "published_year": book[2],
                      "summary": book[3], "genre": book[4], "image": image})
@@ -114,29 +114,20 @@ def get_books():
                      "summary": book[3], "genre": book[4], "image": image})
     return books
 
-def get_authors_books():
-    get_authors_books = "SELECT * FROM author__book ab;"
-    db_cursor.execute(get_authors_books)
-    authors_books = []
-    for author_book in db_cursor.fetchall():
-        authors_books.append({"author_id": author_book[0], "book_id": author_book[1]})
-    return authors_books
-
 def get_course_by_id(course_id):
-    get_course_by_id_sql = "SELECT * FROM course c WHERE c.course_id = \"" + course_id + "\";"
-    db_cursor.execute(get_course_by_id_sql)
+    get_course_by_id_sql = "SELECT * FROM course c WHERE c.course_id = %s;"
+    prep_cursor.execute(get_course_by_id_sql, (course_id, ))
     courses = []
-    for course in db_cursor.fetchall():
+    for course in prep_cursor.fetchall():
         courses.append({"course_id": course[0], "name": course[1], "summary": course[2],
                      "subject": course[3], "semester": course[4], "year": course[5]})
     return courses
 
 def get_professor_by_course_id(course_id):
-    get_professor_by_course_id_sql = "SELECT * FROM professor p, assigned__professor__course apc WHERE \"" + \
-        course_id + "\" = apc.course_id AND apc.prof_id = p.prof_id;"
-    db_cursor.execute(get_professor_by_course_id_sql)
+    get_professor_by_course_id_sql = "SELECT * FROM professor p, assigned__professor__course apc WHERE %s = apc.course_id AND apc.prof_id = p.prof_id;"
+    prep_cursor.execute(get_professor_by_course_id_sql, (course_id, ))
     professors = []
-    for prof in db_cursor.fetchall():
+    for prof in prep_cursor.fetchall():
         professors.append({"prof_id": prof[0], "first_name": prof[2], "last_name": prof[3], "biography": prof[4], "email": prof[5]})
     return professors
 
@@ -150,10 +141,10 @@ def get_courses():
     return courses
 
 def get_professor_by_id(prof_id):
-    get_professor_by_id_sql = "SELECT * FROM professor p WHERE p.prof_id = \"" + prof_id + "\";"
-    db_cursor.execute(get_professor_by_id_sql)
+    get_professor_by_id_sql = "SELECT * FROM professor p WHERE p.prof_id = %s;"
+    prep_cursor.execute(get_professor_by_id_sql, (prof_id, ))
     professors = []
-    for professor in db_cursor.fetchall():
+    for professor in prep_cursor.fetchall():
         image = Image.query.filter_by(image_id=professor[1]).first()
         professors.append({"prof_id": professor[0], "first_name": professor[2],
                      "last_name": professor[3], "biography": professor[4], "email": professor[5], "image": image})
@@ -179,97 +170,98 @@ def get_assigned_professor_course():
     return professors_courses
 
 def get_assigned_professor_course_by_course_id(course_id):
-    assigned_professor_course = "SELECT * FROM assigned__professor__course a WHERE a.course_id = \"" + course_id + "\";"
-    db_cursor.execute(assigned_professor_course)
+    assigned_professor_course = "SELECT * FROM assigned__professor__course a WHERE a.course_id = %s;"
+    prep_cursor.execute(assigned_professor_course, (course_id, ))
     professors_courses = []
-    for professor_course in db_cursor.fetchall():
+    for professor_course in prep_cursor.fetchall():
         professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
                      "course_id": professor_course[2]})
     return professors_courses
 
 def get_book_professor_course(course_id, prof_id):
-    book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = \"" + course_id + "\" AND b.prof_id = \"" + prof_id + "\";"
-    db_cursor.execute(book_professor_course)
+    book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = %s AND b.prof_id = %s;"
+    prep_cursor.execute(book_professor_course, (course_id, prof_id))
     book_professor_courses = []
-    for book_professor_course in db_cursor.fetchall():
+    for book_professor_course in prep_cursor.fetchall():
         book_professor_courses.append({"prof_id": book_professor_course[0], "course_id": book_professor_course[1],
                      "book_id": book_professor_course[2]})
     return book_professor_courses
 
 def get_administrator_by_id(sch_id):
-    get_administrator_by_id_sql = "SELECT * FROM school__administrator sa WHERE sa.sch_id = \"" + sch_id + "\";"
-    db_cursor.execute(get_administrator_by_id_sql)
+    get_administrator_by_id_sql = "SELECT * FROM school__administrator sa WHERE sa.sch_id = %s;"
+    prep_cursor.execute(get_administrator_by_id_sql, (sch_id, ))
     administrators = []
-    for admin in db_cursor.fetchall():
+    for admin in prep_cursor.fetchall():
         administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
     return administrators
 
 def get_author_by_id(author_id):
-    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = \"" + author_id + "\";"
-    db_cursor.execute(get_author_by_id_sql)
+    get_author_by_id_sql = "SELECT * FROM author a WHERE a.author_id = %s;"
+    prep_cursor.execute(get_author_by_id_sql, (author_id, ))
     authors = []
-    for author in db_cursor.fetchall():
+    for author in prep_cursor.fetchall():
         image = Image.query.filter_by(image_id=author[5]).first()
         authors.append({"author_id": author[0], "first_name": author[1], "last_name": author[2], "email": author[3], "biography": author[4], "image": image})
     return authors
+
 def get_course_by_student_id(stud_id):
-    get_course_by_student_id_sql = "SELECT course_id FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\";"
-    db_cursor.execute(get_course_by_student_id_sql)
+    get_course_by_student_id_sql = "SELECT course_id FROM student__course sc WHERE sc.stud_id =  %s;"
+    prep_cursor.execute(get_course_by_student_id_sql, (stud_id, ))
     courses = []
-    for course in db_cursor.fetchall():
+    for course in prep_cursor.fetchall():
         courses.append({"course_id": course[0]})
     return courses
 
 def get_values_course_student(stud_id, course_id):
-    get_values_course_student = "SELECT stud_id, course_id AS count FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\" AND sc.course_id = \"" + course_id + "\";"
-    db_cursor.execute(get_values_course_student)
+    get_values_course_student = "SELECT stud_id, course_id AS count FROM student__course sc WHERE sc.stud_id = %s AND sc.course_id = %s;"
+    prep_cursor.execute(get_values_course_student, (stud_id, course_id))
     checker = []
-    for check in db_cursor.fetchall():
+    for check in prep_cursor.fetchall():
         checker.append({"stud_id": check[0], "course_id": check[1]})
     return checker
 
 def get_check_course_student(stud_id, course_id):
-    get_check_course_student_sql = "SELECT COUNT(*) AS count FROM student__course sc WHERE sc.stud_id = \"" + stud_id + "\" AND sc.course_id = \"" + course_id + "\";"
-    db_cursor.execute(get_check_course_student_sql)
+    get_check_course_student_sql = "SELECT COUNT(*) AS count FROM student__course sc WHERE sc.stud_id = %s AND sc.course_id = %s;"
+    prep_cursor.execute(get_check_course_student_sql, stud_id, course_id)
     checker = []
-    for check in db_cursor.fetchall():
+    for check in prep_cursor.fetchall():
         checker.append({"count": check[0]})
     return checker
 
 def get_course_by_genre(genre):
-    get_course_id_and_prof_id_by_genre_sql = "(SELECT course_id, prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
-    
+    get_course_id_and_prof_id_by_genre_sql = "(SELECT course_id, prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = %s)"
     get_course_info = "(SELECT c.course_id, t1.prof_id, c.name, c.semester, c.year FROM course c INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t1 ON c.course_id = t1.course_id)"
     get_prof_course_info = "(SELECT t2.course_id, p.prof_id, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_id_and_prof_id_by_genre_sql + "t2 ON p.prof_id = t2.prof_id)"
-    
     get_combo_prof_course_info = "SELECT pci.first_name, pci.last_name, gci.name, gci.semester, gci.year, gci.course_id FROM " + get_course_info + "gci INNER JOIN " + get_prof_course_info + " pci ON gci.course_id = pci.course_id;"
 
-    db_cursor.execute(get_combo_prof_course_info)
+    prep_cursor.execute(get_combo_prof_course_info, (genre, genre))
     checker = []
-    for check in db_cursor.fetchall():
+    for check in prep_cursor.fetchall():
         checker.append({"first_name": check[0], "last_name": check[1], "course_name": check[2], "course_semester": check[3], "course_year": check[4], "course_id": check[5]})
     return checker
 
-def get_professor_by_genre_and_semester(genre,semester):
+def get_professor_by_genre_and_semester(genre, semester):
     if genre != '' and semester == '':
-        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
+        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = %s)"
         get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id)"
         get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+        prep_cursor.execute(get_prof_course_info, (genre, ))
         
     elif genre == '' and semester != '':
         get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id)"
-        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
+        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = %s)"
         get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+        prep_cursor.execute(get_prof_course_info, (semester, ))
         
     else:
-        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
-        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
+        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = %s)"
+        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = %s)"
         get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
-        
+        prep_cursor.execute(get_prof_course_info, (genre, semester))
 
-    db_cursor.execute(get_prof_course_info)
+    # db_cursor.execute(get_prof_course_info)
     checker = []
-    for check in db_cursor.fetchall():
+    for check in prep_cursor.fetchall():
         image = Image.query.filter_by(image_id=check[0]).first()
         checker.append({"image": image, "first_name": check[1], "last_name": check[2]})
     return checker
