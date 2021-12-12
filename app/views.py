@@ -365,16 +365,39 @@ def professor_home():
     return render_template('professorHome.html')
 
 
-@views.route('/studentHome.html')
+@views.route('/studentHome.html/<string:id>')
 @login_required
-def student_home():
-    return render_template('studentHome.html')
+def student_home(id):
+    return render_template('studentHome.html', id = id)
 
 
-@views.route('/studentBookmarks.html')
+@views.route('/studentBookmarks.html/<string:id>')
 @login_required
-def student_bookmarks():
-    return render_template('studentBookmarks.html')
+def student_bookmarks(id):
+    return render_template('studentBookmarks.html', id = id)
+
+@views.route('/studentBookProfile.html')
+@login_required
+def student_book_profile():
+    return render_template('studentBookProfile.html')
+
+@views.route('/studentClassesPage.html/<string:id>')
+@login_required
+def student_classes_page(id):
+    return render_template('studentClassesPage.html', id=id)
+
+@views.route('/studentProfessors.html/<string:id>')
+@login_required
+def student_professors(id):
+    return render_template('studentProfessors.html', id=id)
+
+
+@views.route('/studentProfessorsProfile.html')
+@login_required
+def student_professors_profile():
+    return render_template('studentProfessorsProfile.html')
+
+
 
 
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
@@ -454,9 +477,12 @@ def professor_profile():
     return render_template('professorProfile.html', Professor=result[0])
 
 
-@views.route('/studentProfile.html', methods=['GET', 'POST'])
+@views.route('/studentProfile.html/<string:id>', methods=['GET', 'POST'])
 @login_required
-def student_profile():
+def student_profile(id):
+    result = get_student_by_id(id)
+    if len(result) > 0:
+        return render_template('studentProfile.html', id=id, studentData = '')
     if request.method == 'POST':
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -469,9 +495,18 @@ def student_profile():
                            last_name=lastname, major=major, email=email, grade_year=gradeyear)
         database.session.add(new_stud)
         database.session.commit()
-        return redirect(url_for('views.student_home'))
+        return redirect(url_for('views.student_home', id = id))
 
-    return render_template('studentProfile.html')
+    return render_template('studentProfile.html', id=id, studentData = result[0])
+
+def get_student_by_id(student_id):
+    get_student_by_id_sql = "SELECT * FROM student b WHERE b.stud_id = \"" + student_id + "\";"
+    db_cursor.execute(get_student_by_id_sql)
+    students = []
+    for student in db_cursor.fetchall():
+        students.append({"stud_id": student[0], "first_name": student[1], "last_name": student[2],
+                     "major": student[3], "email": student[4], "grade_year": student[5]})
+    return students
 
 
 @views.route('/', methods=['GET', 'POST'])
@@ -489,7 +524,7 @@ def login():
                 print("SUCCESS")
                 login_user(user, remember=True)
                 if user.role == "student":
-                    return redirect(url_for('views.student_home'))
+                    return redirect(url_for('views.student_home', id = username))
                 if user.role == "professor":
                     return redirect(url_for('views.professor_home'))
                 if user.role == "author":
@@ -529,7 +564,7 @@ def sign_up():
             database.session.commit()
             login_user(new_user, remember=True)
             if role_type == "student":
-                return redirect(url_for('views.student_profile'))
+                return redirect(url_for('views.student_profile', id = username))
             if role_type == "professor":
                 return redirect(url_for('views.professor_profile'))
             if role_type == "author":
