@@ -45,7 +45,7 @@
             <div class="Title">
                 <div class="leftSide">
                     <!-- Image and Title on the Left Side -->
-                    <img src="ask isha" class="Prof Logo" />
+                    <img src="data:{{ Data[0].image.mimetype }};base64,{{ Data[0].image.image.decode() }}" class="Prof Logo" />
                     <div class="titles">
                         <h1 style="margin-top: 0;">{{Data[0].first_name + ' ' + Data[0].last_name}}</h1>
                         <div>
