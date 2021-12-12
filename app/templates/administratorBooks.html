@@ -50,30 +50,22 @@
                         <div class ="sectionTitle">Grade</div>
                         <div class="choices">
                             <div class="select">
-                                <input type="checkbox" id="Freshmen" name="Freshmen" value="Freshmen">
-                                <label for="Freshmen">Freshmen</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="Sophomore" name="Sophomore" value="Sophomore">
-                                <label for="Sophomore">Sophomore</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="Junior" name="Junior" value="Junior">
-                                <label for="Junior">Junior</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="Senior" name="Senior" value="Senior">
-                                <label for="Senior">Senior</label>
-                            </div>
+                                <select type="text" name="gradeyear" id="gradeYearslct">
+                                  <option value="">Grade Year</option>
+                                  <option value="Freshmen">Freshmen</option>
+                                  <option value="Sophomore">Sophomore</option>
+                                  <option value="Junior">Junior</option>
+                                  <option value="Senior">Senior</option>
+                                </select>
+                            </div> 
                         </div>
                     </div>
-                    
                     <div class = "criteriaButton">
-                        <button type="submit" form="searchCriteria" name="submit">Submit</button>
+                        <button type="button" form="searchCriteria" class="submit" name="submit">Submit</button>
                     </div>
                 </form>
-                {% for item in Author_book_info %}
                 <div class='cardContainer generic'>
+                    {% for item in Author_book_info %}
                     <a class='cardLink generic' href='/administratorBookProfile.html/{{ item.author_books_info.book_id }}'>
                         <div class='card'>
                             <div class='cardImage'>
@@ -86,8 +78,9 @@
                                 <h3>author name</h3>
                             </div>
                         </div>
+                        {% endfor %}
                     </a>
-                    {% endfor %}
+                    
                        
 
                 </div>

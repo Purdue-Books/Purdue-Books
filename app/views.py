@@ -203,6 +203,16 @@ def get_administrator_by_id(sch_id):
         administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
     return administrators
 
+def get_book_ratings_by_grade_level(grade_level):
+    get_book_ratings_by_grade_level = "SELECT book_id from ( SELECT sr.book_id, AVG(sr.rating) ((SELECT * FROM student s WHERE s.grade_level = \""  + grade_level + "\") NATURAL JOIN rating) AS sr GROUP BY sr.book_id) ORDER BY AVG(sr.rating) desc;"
+    db_cursor.execute(get_book_ratings_by_grade_level)
+    books_rating = []
+    for book_id in db_cursor.fetchall():
+        #administrators.append({"sch_id": admin[0], "first_name": admin[1], "last_name": admin[2], "email": admin[3]})
+        book = get_book_by_id(book_id)
+        books_rating.append({"book_info": book})
+    return books_rating
+
 views = Blueprint('views', __name__)
 
 @login_required
@@ -270,19 +280,30 @@ def create_course():
 
 @views.route('/administratorBooks.html/', methods=['POST', 'GET'])
 def administrator_books():
+    grade_level = ""
+    flag = 0
     author_books_info = []
-    books = get_books()
-    print(books)
-    print(id)
-    for book in books:
-        print(book)
-        print(book['book_id'])
-        author_book = get_author_by_book_id(book['book_id'])
-        print(*author_book)
-        author_books_info.append({"author_books_info": author_book})
-    print("blahah 1")
-    print(*author_books_info)
-    print("blahah 2")
+    for checkbox in 'Freshmen', 'Sophomore', 'Junior', 'Senior':
+        value = request.form.get(checkbox)
+        print("VALUE")
+        print(value)
+        if value != None:
+            grade_level = value
+            flag = 1  
+    if flag == 0:
+        books_info = get_books()
+        print(books_info)
+        print(id)
+        for book in books_info:
+            #print(book)
+            #print(book['book_id'])
+            author_book = get_author_by_book_id(book['book_id'])
+            #print(*author_book)
+            author_books_info.append({"author_books_info": author_book})
+        #print(*author_books_info)
+        #print("blahah 2")
+    else:
+        author_books_info = get_book_ratings_by_grade_level(grade_level)
     return render_template('administratorBooks.html', Author_book_info=author_books_info)
 
 @views.route('/administratorCourse.html/<string:id>', methods=['POST', 'GET'])
