@@ -116,3 +116,10 @@ class Image(database.Model):
     image = database.Column(database.Text, nullable=False)
     name = database.Column(database.Text, nullable=False)
     mimetype = database.Column(database.Text, nullable=False)
+
+class Rating(database.Model):
+    stud_id = database.Column(database.String(
+        256), database.ForeignKey('user.username'), primary_key=True)
+    book_id = database.Column(database.String(
+        256), database.ForeignKey('book.book_id'), primary_key=True)
+    rating = database.Column(database.Integer)
