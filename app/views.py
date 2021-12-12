@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask.scaffold import F
 from flask.wrappers import Response
-from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Book_Course, Image, Assigned_Professor_Course, Student_Course, Book_Course
+from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Image, Assigned_Professor_Course, Student_Course
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -250,11 +251,21 @@ def get_course_by_genre(genre):
     return checker
 
 def get_professor_by_genre_and_semester(genre,semester):
-    get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
-    
-    get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
-    get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
-    
+    if genre != '' and semester == '':
+        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
+        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id)"
+        get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+        
+    elif genre == '' and semester != '':
+        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id)"
+        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
+        get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+        
+    else:
+        get_course_by_genre = "(SELECT bpc.course_id, bpc.prof_id FROM book bk INNER JOIN book__professor__course bpc ON bk.book_id = bpc.book_id WHERE bk.genre = \"" + genre + "\")"
+        get_course_info = "(SELECT cbg.prof_id FROM course c INNER JOIN" + get_course_by_genre + "cbg ON c.course_id = cbg.course_id WHERE c.semester = \"" + semester + "\")"
+        get_prof_course_info = "SELECT p.image, p.first_name, p.last_name FROM professor p INNER JOIN" + get_course_info + "t2 ON p.prof_id = t2.prof_id;"
+        
 
     db_cursor.execute(get_prof_course_info)
     checker = []
@@ -411,7 +422,6 @@ def edit_book(id):
 def delete_book(id):
     result = get_book_by_id(id)
     Image.query.filter_by(image_id=result[0].get('image').image_id).delete()
-    Book_Course.query.filter_by(book_id=id).delete()
     Book_Professor_Course.query.filter_by(book_id=id).delete()
     Professor_Book.query.filter_by(book_id=id).delete()
     Author_Book.query.filter_by(book_id=id).delete()
@@ -459,7 +469,6 @@ def delete_course(id):
     Assigned_Professor_Course.query.filter_by(course_id=id).delete()
     Book_Professor_Course.query.filter_by(course_id=id).delete()
     Student_Course.query.filter_by(course_id=id).delete()
-    Book_Course.query.filter_by(course_id=id).delete()
     Course.query.filter_by(course_id=id).delete()
     database.session.commit()
     database.session.flush()
@@ -590,14 +599,11 @@ def student_classes_page(id):
 @login_required
 def student_professors():
     result = get_professors()
-
     if request.method == 'POST':
         genre = request.form.get("genre")
         semester = request.form.get("semester")
-        if genre != '' and semester != '':
-            result = get_professor_by_genre_and_semester(genre, semester)
-        elif genre != '' and semester == '':
-            result = get_professor_by_genre_and_semester(genre, semester)
+        result = get_professor_by_genre_and_semester(genre, semester)
+        
 
     return render_template('studentProfessors.html', Data=result)
 
