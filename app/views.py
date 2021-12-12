@@ -368,8 +368,15 @@ def professor_home():
 @views.route('/studentHome.html/')
 @login_required
 def student_home():
-    result = get_courses()
-    return render_template('studentHome.html', Data=result)
+    results = get_courses()
+    professors_courses_info = []
+    for result in results:
+        professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
+        for professor_course in professors_courses:
+            professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+            course = get_course_by_id(course_id=professor_course['course_id'])
+            professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+    return render_template('studentHome.html', Data=professors_courses_info)
 
 
 @views.route('/studentBookmarks.html/')
@@ -392,7 +399,7 @@ def student_classes_page(id):
         professor = get_professor_by_id(prof_id=professor_course['prof_id'])
         course = get_course_by_id(course_id=professor_course['course_id'])
         professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "image": professor[0]['image'], "prof_biography": professor[0]['biography'], "prof_email": professor[0]['email'],"course_id": course[0]['course_id'], "course_name": course[0]['name'], "course_summary": course[0]['summary'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_subject": course[0]['subject']})
-    return render_template('studentClassesPage.html', Data=course_info, Prof=professors_courses_info)
+    return render_template('studentClassesPage.html', Prof=professors_courses_info)
 
 @views.route('/studentProfessors.html/')
 @login_required
