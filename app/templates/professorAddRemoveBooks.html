@@ -42,8 +42,9 @@
                 <div class="select">
                     <select size="10" type="text" name="addBooks" id="addBooks">
                         <option selected disabled>Add Books Here</option>
-                        <option value="test">Professor Names</option>
-                        <option value="test1">test placeholder</option>
+                        {% for bookTitle in bookAdd %}
+                        <option value="{{ bookTitle.book_id }}">{{ bookTitle.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -51,8 +52,9 @@
                 <div class="select">
                     <select size="10" type="text" name="removeBooks" id="removeBooks" multiple>
                         <option selected disabled>Remove Books Here</option>
-                        <option value="test">Professor Names</option>
-                        <option value="test1">test placeholder</option>
+                        {% for bookTitle in bookRemove %}
+                        <option value="{{ bookTitle.book_id }}">{{ bookTitle.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 
