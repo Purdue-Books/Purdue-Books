@@ -47,7 +47,7 @@
                     <!-- Image and Title on the Left Side -->
                     <img src="data:{{ Book[0].image.mimetype }};base64,{{ Book[0].image.image.decode() }}" class="Book Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">{{ Book[0].title }}</h1>
+                        <h1 style="margin-top: 0;">{{ Book[0].title }} {{rating}}</h1>
                         <div>
                             <h4 style="margin: 0;">{{ Author[0].first_name + ' ' + Author[0].last_name}}</h4>
                             <h4 style="margin: 0;">{{ Book[0].published_year }}</h4>
@@ -55,8 +55,8 @@
                     </div>
                 </div>
                 <div class="rightSide">
-                    <form name="Rating" id="Rating" action="" method="POST">
-                            <select type="text" name="genre" id="genre">
+                    <form name="Rating" id="Rating" action="" method="GET">
+                            <select type="text" name="rating" id="rating">
                                 <option selected disabled>Rating</option>
                                 <option value="5">5</option>
                                 <option value="4">4</option>
@@ -64,8 +64,8 @@
                                 <option value="2">2</option>
                                 <option value="1">1</option>
                             </select>
+                            <button type="submit" name="submit" class="submit">Submit</button>
                     </form>
-                    <button form="Rating" type="submit" name="submit" value="accepted" class="submit">Submit</button>
                 </div>
             </div>
             <!-- Header Section -->

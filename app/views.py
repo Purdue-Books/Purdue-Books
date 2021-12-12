@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask.scaffold import F
 from flask.wrappers import Response
-from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Image, Assigned_Professor_Course, Student_Course
+from .models import Course, Professor, User, Student, Author, School_Administrator, Book, Author_Book, Professor_Book, Book_Professor_Course, Image, Assigned_Professor_Course, Student_Course, Rating
 from . import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -534,13 +534,22 @@ def student_bookmarks():
         professors_courses_info.append({"prof_name": prof_info[0]['first_name'] + " " + prof_info[0]['last_name'], "course_name": course_info[0]['name'], "course_semester": course_info[0]['semester'], "course_year": course_info[0]['year'], "course_id": course_info[0]['course_id']})
     return render_template('studentBookmarks.html', Data=professors_courses_info)
 
-@views.route('/studentBookProfile.html/<string:id>')
+@views.route('/studentBookProfile.html/<string:id>', methods=['POST', 'GET'])
 @login_required
 def student_book_profile(id):
     bookResult = get_book_by_id(book_id=id)
     authorId = get_author_by_book_id(book_id=id)
     authorResult = get_author_by_id(authorId[0]['author_id'])
-    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult )
+    test = ''
+    '''
+    if request.method == 'GET':
+        amount = request.form.get("rating")
+        test = type(int(amount))
+        rates = Rating(stud_id = current_user.get_id(), book_id = id, rating = amount)
+        database.session.add(rates)
+        database.session.commit()
+    '''
+    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult, rating = test)
 
 @views.route('/studentClassesPage.html/<string:id>', methods=['GET', 'POST'])
 @login_required
