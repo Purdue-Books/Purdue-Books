@@ -178,6 +178,15 @@ def get_assigned_professor_course_by_course_id(course_id):
                      "course_id": professor_course[2]})
     return professors_courses
 
+def get_assigned_professor_course_by_prof_id(prof_id):
+    get_assigned_professor_course_by_prof_id = "SELECT * FROM assigned__professor__course a WHERE a.prof_id = %s;"
+    prep_cursor.execute(get_assigned_professor_course_by_prof_id, (prof_id, ))
+    professors_courses = []
+    for professor_course in prep_cursor.fetchall():
+        professors_courses.append({"sch_id": professor_course[0], "prof_id": professor_course[1],
+                     "course_id": professor_course[2]})
+    return professors_courses
+
 def get_book_professor_course(course_id, prof_id):
     book_professor_course = "SELECT * FROM book__professor__course b WHERE b.course_id = %s AND b.prof_id = %s;"
     prep_cursor.execute(book_professor_course, (course_id, prof_id))
@@ -274,6 +283,14 @@ def get_check_rating_by_student_and_book(stud_id, book_id):
         checker.append({"amount": check[0]})
     return checker
 
+def get_rating_by_book_id(book_id):
+    get_rating_by_book_id_sql = "SELECT CAST(AVG(rating) AS DECIMAL(10,2)) FROM rating r WHERE r.book_id = \"" + book_id + "\";"
+    db_cursor.execute(get_rating_by_book_id_sql)
+    checker = []
+    for check in db_cursor.fetchall():
+        checker.append({"average": check[0]})
+    return checker
+
 
 views = Blueprint('views', __name__)
 
@@ -368,13 +385,38 @@ def administrator_book_profile(id):
     result = get_book_by_id(book_id=id)
     return render_template('/administratorBookProfile.html', Data=result)
 
-@views.route('/professorBookProfile.html', methods=['POST', 'GET'])
-def professor_book_profile():
-    return render_template('professorBookProfile.html')
+@views.route('/professorBookProfile.html/<string:id>', methods=['POST', 'GET'])
+@login_required
+def professor_book_profile(id):
+    books = get_book_by_id(id)
+    sendData = []
+    for book in books:
+        rating = get_rating_by_book_id(book['book_id'])
+        author = get_author_by_book_id(book['book_id'])
+        sendData = [{"book_id": book['book_id'], "author_name": author[0]['author_name'], "title": book['title'], "published_year": book['published_year'], "summary": book['summary'], "genre": book['genre'], "image": book['image'], "rating": rating[0]['average']}]
+    return render_template('professorBookProfile.html', Data = sendData[0])
+
+@views.route('/professorCourse.html/<string:id>')
+@login_required
+def professor_book_course(id):
+    courses = get_course_by_id(id)
+    professors = get_professor_by_course_id(id)
+    books = get_book_professor_course(courses[0]['course_id'], professors[0]['prof_id'])
+    bookList = []
+    for book in books:
+        bookList.append(get_book_by_id(book['book_id']))
+    return render_template('professorCourse.html', courseData = courses, professorData = professors, bookData = bookList)
 
 @views.route('/professorBooks.html', methods=['POST', 'GET'])
+@login_required
 def professor_books():
-    return render_template('professorBooks.html')
+    results = get_books()
+    sendData = []
+    for result in results:
+        author_info = get_author_by_book_id(result['book_id'])
+        for author in author_info:
+            sendData.append({"book_id": result['book_id'], "book_name": result['title'], "author_name": author['author_name'], "image": result['image']})
+    return render_template('professorBooks.html', Data = sendData)
 
 @views.route('/authorBookEdit.html/<string:id>', methods=['POST', 'GET'])
 @login_required
@@ -493,7 +535,14 @@ def author_book_profile(id):
 @views.route('/professorHome.html')
 @login_required
 def professor_home():
-    return render_template('professorHome.html')
+    results = get_assigned_professor_course_by_prof_id(current_user.get_id())
+    sendData = []
+    for result in results:
+        course_id = result['course_id']
+        courses = get_course_by_id(course_id)
+        for course in courses:
+            sendData.append(course)
+    return render_template('professorHome.html', Data = sendData)
 
 
 @views.route('/studentHome.html/', methods=['POST', 'GET'])
@@ -607,7 +656,7 @@ def student_professors():
     return render_template('studentProfessors.html', Data=result)
 
 
-@views.route('/studentProfessorProfile.html/<string:id>')
+@views.route('/studentProfessorProfile.html/')
 @login_required
 def student_professors_profile(id):
     result = get_professor_by_id(id)

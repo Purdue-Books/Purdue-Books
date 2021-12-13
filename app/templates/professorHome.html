@@ -15,17 +15,22 @@
         </div>
             <ul>
                 <li>
-                    <a href="professorHome.html">
+                    <a href="/professorHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorProfile.html">
+                    <a href="/professorBooks.html">
+                    <div>BOOKS</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/professorProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
@@ -40,14 +45,16 @@
         </section>
         <section>
             <div class='cardContainer generic'>
-                        <a class='cardLink generic' href='professorCourse.html'>
+                {% for item in Data %}
+                        <a class='cardLink generic' href='/professorCourse.html/{{item.course_id}}'>
                             <div class='card'>
                                 <div class='cardInfo'>
-                                    <h1>Course Name</h1>
-                                    <h3>Semester</h3>
+                                    <h1>{{item.name}}</h1>
+                                    <h3>{{item.semester+" "+item.year}}</h3>
                                 </div>
                             </div>
                         </a>
+                {% endfor %}
             </div>
         </section>
         <!-- Shows the Page Numbers -->
