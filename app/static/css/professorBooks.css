@@ -1,4 +1,4 @@
-/*CSS for the jobSearch page*/
+
 .cardContainer {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -63,9 +63,35 @@
 
 
 
+/* Reset Select */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 2px solid #eee !important;
+  background: #fff;
+  background-image: none;
+  font-size: 20px;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select */
 .select {
   display: flex;
-  flex-direction: row;
+  background: #fff;
+  overflow: hidden;
+  border-radius: 4px;
+}
+select {
+  flex: 1;
+  padding: 10px 5px;
+  color: #000;
+  cursor: pointer;
 }
 
 .criteriaButton {

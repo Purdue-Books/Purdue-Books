@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Professor Books</title>
-	    <link rel="stylesheet" href="../css/global.css" />
-	    <link rel="stylesheet" href="../css/administratorBooks.css" />
+	    <link rel="stylesheet" href="../static/css/global.css" />
+	    <link rel="stylesheet" href="../static/css/professorBooks.css" />
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 	    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js'></script>
         <script src="../js/paginationAndJobSearch.js" defer></script><!-- defer used to run after the page loads -->
@@ -15,22 +15,22 @@
         </div>
             <ul>
                 <li>
-                    <a href="professorHome.html">
+                    <a href="/professorHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorBooks.html">
+                    <a href="/professorBooks.html">
                     <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorProfile.html">
+                    <a href="/professorProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
@@ -49,113 +49,46 @@
 
                     <div class="sectionChoice">
                         <div class ="sectionTitle">Rating</div>
-                        <div class="choices">
-                            <div class="select">
-                                <input type="checkbox" id="4+" name="4+" value="4+">
-                                <label for="4+">4+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="3+" name="3+" value="3+">
-                                <label for="3+">3+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2+" name="2+" value="2+">
-                                <label for="2+">2+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="1+" name="1+" value="1+">
-                                <label for="1+">1+</label>
-                            </div>
-                        </div>
+                        <select type="text" name="rating" id="rating">
+                            <option value="">Rating</option>
+                            <option value="4">4+</option>
+                            <option value="3">3+</option>
+                            <option value="2">2+</option>
+                            <option value="1">1+</option>
+                        </select>
                     </div>
 
                     <div class="sectionChoice">
                         <div class ="sectionTitle">Year</div>
-                        <div class="choices">
-                            <div class="select">
-                                <input type="checkbox" id="2015+" name="2015+" value="2015+">
-                                <label for="2015+">2015+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2010+" name="2010+" value="2010+">
-                                <label for="2010+">2010+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2005+" name="2005+" value="2005+">
-                                <label for="2005+">2005+</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="2000+" name="2000+" value="2000+">
-                                <label for="2000+">2000+</label>
-                            </div>
-                        </div>
+                        <select type="text" name="year" id="year">
+                            <option value="">Year</option>
+                            <option value="2015">2015+</option>
+                            <option value="2010">2010+</option>
+                            <option value="2005">2005+</option>
+                            <option value="2000">2000+</option>
+                        </select>
                     </div>
-
-                    
                     
                     <div class = "criteriaButton">
                         <button type="submit" form="searchCriteria" name="submit">Submit</button>
                     </div>
                 </form>
-                
                 <div class='cardContainer generic'>
-                    
-                    <a class='cardLink generic' href='professorBookProfile.html'>
+                    {% for item in Data %}
+                    <a class='cardLink generic' href='/professorBookProfile.html/{{item.book_id}}'>
                         <div class='card'>
                             <div class='cardImage'>
                                 <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
+                                        <img src= 'data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Book Cover' />
                                 </div>
                             </div>
                             <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
+                                <h1>{{item.book_name}}</h1>
+                                <h3>{{item.author_name}}</h3>
                             </div>
                         </div>
                     </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class='cardLink generic' href='professorBookProfile.html'>
-                        <div class='card'>
-                            <div class='cardImage'>
-                                <div id = 'information' class = 'middle_part'>
-                                        <img src= '../img/sample.jpg' alt='Book Cover' />
-                                </div>
-                            </div>
-                            <div class='cardInfo'>
-                                <h1>Book Name</h1>
-                                <h3>Author Name</h3>
-                            </div>
-                        </div>
-                    </a>
-                    
+                    {% endfor %}
                 </div>
             </div>
         </section>

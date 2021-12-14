@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Professor Course</title>
-        <link rel="stylesheet" href="../css/global.css" />
-        <link rel="stylesheet" href="../css/professorCourse.css" />
-        <script src="../js/myTabs.js" defer></script>
+        <link rel="stylesheet" href="../static/css/global.css" />
+        <link rel="stylesheet" href="../static/css/professorCourse.css" />
+        <script src="../static/js/myTabs.js" defer></script>
     </head>
     <!---  Header HTML Code --->
     <nav>
@@ -13,22 +13,22 @@
         </div>
             <ul>
                 <li>
-                    <a href="professorHome.html">
+                    <a href="/professorHome.html">
                     <div>HOME</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorBooks.html">
+                    <a href="/professorBooks.html">
                     <div>BOOKS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="professorProfile.html">
+                    <a href="/professorProfile.html">
                     <div>SETTINGS</div>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="/index.html">
                     <div>LOGOUT</div>
                     </a>
                 </li>
@@ -40,12 +40,11 @@
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
-                    <img src="../img/sample.jpg" class="Company Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">Course Name</h1>
+                        <h1 style="margin-top: 0;">{{courseData[0].name}}</h1>
                         <div>
-                            <h4 style="margin: 0;">Professor Name</h4>
-                            <h4 style="margin: 0;">Course Semester and Year</h4>
+                            <h4 style="margin: 0;">{{professorData[0].first_name + ' ' + professorData[0].last_name}}</h4>
+                            <h4 style="margin: 0;">{{courseData[0].semester + ' ' + courseData[0].year}}</h4>
                         </div>
                     </div>
                 </div>
@@ -67,7 +66,9 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Description of the Course!</br>
+                                Course Subject: {{courseData[0].subject}}</br>
+                                {{courseData[0].summary}}
+                                {{bookData}}
                             </p>
                         </div>
                     </div>
