@@ -45,12 +45,12 @@
         </section>
         <section>
             <div class = "layoutCriteria">
-                <form class = "searchCriteria">
+                <form class = "searchCriteria"  method="POST" enctype="multipart/form-data">
                     <div class="sectionChoice">
                         <div class ="sectionTitle">Grade</div>
                         <div class="choices">
                             <div class="select">
-                                <select type="text" name="gradeyear" id="gradeYearslct">
+                                <select type="text" name="gradeyear" id="gradeyear">
                                   <option value="">Grade Year</option>
                                   <option value="Freshmen">Freshmen</option>
                                   <option value="Sophomore">Sophomore</option>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class = "criteriaButton">
-                        <button type="button" form="searchCriteria" class="submit" name="submit">Submit</button>
+                        <button type="submit" class="submit" name="submit">Submit</button>
                     </div>
                 </form>
                 <div class='cardContainer generic'>
