@@ -45,7 +45,7 @@
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
-                    <img src="../img/sample.jpg" class="Company Logo" />
+                    <img src="data:{{ Prof[0].image.mimetype }};base64,{{ Prof[0].image.image.decode() }}" class="Company Logo" />
                     <div class="titles">
                         <h1 style="margin-top: 0;">{{Prof[0].course_name}}</h1>
                         <div>
@@ -56,8 +56,11 @@
                 </div>
                 <div class="rightSide">
                     <form name="accept" id="accept" action="" method="POST">
-                        <button form="accept" type="submit" name="submit" value="accept" class="submit">Join</button>
-                        <!-- <button form="accept" type="submit" name="submit" value="accept" class="submit">UnJoin</button> -->
+                        {% if check.count == 1 %}
+                            <button form="accept" type="submit" name="submit" value="reject" class="submit">Unjoin</button>
+                        {% else %}
+                            <button form="accept" type="submit" name="submit" value="accept" class="submit">Join</button>
+                        {% endif %}
                     </form>
                 </div>
             </div>
@@ -94,20 +97,22 @@
                         <div class="bookList">
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
-                                
-                                <a class='cardLink generic' href='/studentBookProfile.html'>
+                                {% for item in Book %}
+
+                                <a class='cardLink generic' href='/studentBookProfile.html/{{item.book_id}}'>
                                     <div class='card'>
                                         <div class='cardInfo'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                                <img src= 'data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
+                                            <h1>{{item.book_title}}</h1>
+                                            <h3>{{item.author_name}}</h3>
                                         </div>
                                     </div>
                                 </a>
+                                {% endfor %}
 
 
                             </div>

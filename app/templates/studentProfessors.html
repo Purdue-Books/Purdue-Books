@@ -50,12 +50,12 @@
         </section>
         <section>
             <div class = "layoutCriteria">
-                <form class = "searchCriteria">
+                <form class = "searchCriteria" method="POST" enctype="multipart/form-data">
 
                     <div class="sectionChoice">
                         <div class ="sectionTitle">Genre</div>
                         <select type="text" name="genre" id="genre">
-                            <option selected disabled>Genre</option>
+                            <option value="">Genre</option>
                             <option value="Fantasy">Fantasy</option>
                             <option value="Science">Science</option>
                             <option value="Dystopian">Dystopian</option>
@@ -71,29 +71,19 @@
                             <option value="Autobiography">Autobiography</option>
                         </select>
                     </div>
-
                     <div class="sectionChoice">
                         <div class ="sectionTitle">Semester</div>
-                        <div class="choices">
-                            <div class="select">
-                                <input type="checkbox" id="Fall" name="Fall" value="Fall">
-                                <label for="Fall">Fall</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="Spring" name="Spring" value="Spring">
-                                <label for="Spring">Spring</label>
-                            </div>
-                            <div class="select">
-                                <input type="checkbox" id="Winter" name="Winter" value="Winter">
-                                <label for="Winter">Winter</label>
-                            </div>
-                        </div>
+                        <select type="text" name="semester" id="semester">
+                            <option value="">Semester</option>
+                            <option value="Fall">Fall</option>
+                            <option value="Spring">Spring</option>
+                            <option value="Summer">Summer</option>
+                        </select>
                     </div>
 
                     
-                    
                     <div class = "criteriaButton">
-                        <button type="submit" form="searchCriteria" name="submit">Submit</button>
+                        <button type="submit" name="submit">Submit</button>
                     </div>
                 </form>
                 
@@ -103,7 +93,7 @@
                         <div class='card'>
                             <div class='cardImage'>
                                 <div id = 'information' class = 'middle_part'>
-                                        <img src= '' alt='Professor' />
+                                        <img src= 'data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Professor' />
                                 </div>
                             </div>
                             <div class='cardInfo'>

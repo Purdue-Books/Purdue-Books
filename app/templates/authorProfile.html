@@ -11,21 +11,25 @@
         <h2>AUTHOR</h2>
     </div>
         <ul>
+            {% if test != 0 %}
             <li>
                 <a href="/authorHome.html">
                 <div>HOME</div>
                 </a>
             </li>
+            {% endif %}
             <li>
                 <a href="/authorProfile.html">
                 <div>SETTINGS</div>
                 </a>
             </li>
+            {% if test != 0 %}
             <li>
                 <a href="/index.html">
                 <div>LOGOUT</div>
                 </a>
             </li>
+            {% endif %}
         </ul>
 </nav>
     <body>
@@ -36,11 +40,11 @@
             <div class="sectionOne">
                 <!-- File Upload -->
                 <input type="file" name="fileToUpload" id="fileToUpload" required/>
-                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="" />
-                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="" />
-                <input id="email" type="text" name="email" placeholder="Email" value="" />
+                <input id="first_name" type="text" name="firstname" placeholder="First Name" value="{{ Author.first_name }}" />
+                <input id="last_name" type="text" name="lastname" placeholder="Last Name" value="{{ Author.last_name }}" />
+                <input id="email" type="text" name="email" placeholder="Email" value="{{ Author.email }}" />
                 <!-- Job Description -->
-				<textarea rows="4" cols="50" type="text" name="biography" placeholder="Biography" required></textarea>
+				<textarea rows="4" cols="50" type="text" name="biography" placeholder="Biography" required>{{ Author.biography }}</textarea>
             </div>
             <div class="sectionThree">
                 <button type="submit" name="submit" class="submit">Submit</button>

@@ -11,6 +11,7 @@
         <h2>STUDENT</h2>
     </div>
     <ul>
+        {% if test != 0 %}
         <li>
             <a href="/studentHome.html">
             <div>HOME</div>
@@ -26,16 +27,19 @@
             <div>PROFESSORS</div>
             </a>
         </li>
+        {% endif %}
         <li>
             <a href="/studentProfile.html">
             <div>SETTINGS</div>
             </a>
         </li>
+        {% if test != 0 %}
         <li>
             <a href="/index.html">
             <div>LOGOUT</div>
             </a>
         </li>
+        {% endif %}
     </ul>
 </nav>
     <body>
@@ -59,10 +63,10 @@
                 <div class="select">
                     <select type="text" name="gradeyear" id="gradeYearslct">
                       <option selected disabled>Grade Year</option>
-                      <option value="1">Freshmen</option>
-                      <option value="2">Sophomore</option>
-                      <option value="3">Junior</option>
-                      <option value="4">Senior</option>
+                      <option value="Freshmen">Freshmen</option>
+                      <option value="Sophomore">Sophomore</option>
+                      <option value="Junior">Junior</option>
+                      <option value="Senior">Senior</option>
                     </select>
                 </div> 
             </div>
