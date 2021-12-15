@@ -962,7 +962,8 @@ def author_profile():
 @views.route('/professorProfile.html', methods=['GET', 'POST'])
 @login_required
 def professor_profile():
-    if request.method == 'POST':
+    result = get_professor_by_id(current_user.get_id())
+    if request.method == 'POST' and len(result) == 0:
         prof_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
@@ -986,6 +987,22 @@ def professor_profile():
     result = get_professor_by_id(current_user.get_id())
     if len(result) == 0:
         result.append({"prof_id": "", "first_name": "", "last_name": "", "biography": "", "email": ""})
+    if request.method == 'POST' and len(result) == 1:
+        prof_id = current_user.get_id()
+        firstname = request.form.get("firstname")
+        lastname = request.form.get('lastname')
+        biography = request.form.get('biography')
+        email = request.form.get('email')
+        image_id = uuid.uuid1();
+        professor = Professor.query.filter_by(prof_id=result[0].get('prof_id')).first()
+        professor.prof_id = prof_id
+        professor.first_name = firstname
+        professor.last_name = lastname
+        professor.biography = biography
+        professor.email = email
+        database.session.commit() 
+        database.session.flush()
+        return redirect(url_for('views.professor_home'))
     return render_template('professorProfile.html', Professor=result[0])
 
 
