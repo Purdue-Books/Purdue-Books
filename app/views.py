@@ -914,7 +914,7 @@ def student_professors_profile(id):
 @login_required
 def admin_profile():
     result = get_administrator_by_id(current_user.get_id())
-    if request.method == 'POST' and len(result) == 0:
+    if request.method == 'POST':
         sch_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
@@ -941,31 +941,42 @@ def admin_profile():
     return render_template('administratorProfile.html', Administrator=result[0])
 
 
+
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
 @login_required
 def author_profile():
+    result = get_author_by_id(current_user.get_id())
     if request.method == 'POST':
-        prof_id = current_user.get_id()
+        author_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
         biography = request.form.get('biography')
         email = request.form.get('email')
         image_id = uuid.uuid1();
 
-        new_auth = Author(author_id=prof_id, first_name=firstname,
-                          last_name=lastname, biography=biography, email=email, image=image_id)
-        database.session.add(new_auth)
-        database.session.commit()
+        if len(result) == 0:
+            new_auth = Author(author_id=author_id, first_name=firstname,
+                            last_name=lastname, biography=biography, email=email, image=image_id)
+            database.session.add(new_auth)
+            database.session.commit()
 
-        file = request.files["fileToUpload"]
-        filename = secure_filename(file.filename)
-        mimetype = file.mimetype
-        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
-        database.session.add(image)
-        database.session.commit()
+            file = request.files["fileToUpload"]
+            filename = secure_filename(file.filename)
+            mimetype = file.mimetype
+            image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
+            database.session.add(image)
+            database.session.commit()
 
+        if (len(result) == 1):
+            author = Author.query.filter_by(author_id=result[0].get('author_id')).first()
+            author.firstname = firstname
+            author.lastname = lastname
+            author.biography = biography
+            author.email = email
+            database.session.commit()
+            database.session.flush()
+        
         return redirect(url_for('views.author_home'))
-    result = get_author_by_id(current_user.get_id())
     if len(result) == 0:
         result.append({"author_id": "", "first_name": "", "last_name": "", "email": "", "biography": "", "image": ""})
     return render_template('authorProfile.html', Author=result[0])
@@ -974,6 +985,7 @@ def author_profile():
 @views.route('/professorProfile.html', methods=['GET', 'POST'])
 @login_required
 def professor_profile():
+    result = get_professor_by_id(current_user.get_id())
     if request.method == 'POST':
         prof_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -982,20 +994,28 @@ def professor_profile():
         email = request.form.get('email')
         image_id = uuid.uuid1();
 
-        new_prof = Professor(prof_id=prof_id, first_name=firstname,
-                             last_name=lastname, biography=biography, email=email, image=image_id)
-        database.session.add(new_prof)
-        database.session.commit()
+        if len(result) == 0:
+            new_prof = Professor(prof_id=prof_id, first_name=firstname,
+                                last_name=lastname, biography=biography, email=email, image=image_id)
+            database.session.add(new_prof)
+            database.session.commit()
 
-        file = request.files['fileToUpload']
-        filename = secure_filename(file.filename)
-        mimetype = file.mimetype
-        image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
-        database.session.add(image)
-        database.session.commit()
+            file = request.files['fileToUpload']
+            filename = secure_filename(file.filename)
+            mimetype = file.mimetype
+            image = Image(image_id=image_id, image=base64.b64encode(file.read()), mimetype=mimetype, name=filename)
+            database.session.add(image)
+            database.session.commit()
 
+        if (len(result) == 1):
+            professor = Professor.query.filter_by(prof_id=result[0].get('prof_id')).first()
+            professor.firstname = firstname
+            professor.lastname = lastname
+            professor.biography = biography
+            professor.email = email
+            database.session.commit()
+            database.session.flush()
         return redirect(url_for('views.professor_home'))
-    result = get_professor_by_id(current_user.get_id())
     if len(result) == 0:
         result.append({"prof_id": "", "first_name": "", "last_name": "", "biography": "", "email": ""})
     return render_template('professorProfile.html', Professor=result[0])
@@ -1018,7 +1038,7 @@ def student_profile():
         database.session.commit()
         return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        return render_template('studentProfile.html', studentData = '')
+        result = get_professor_by_id(current_user.get_id())
     if request.method == 'POST' and len(result) == 1:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
