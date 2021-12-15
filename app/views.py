@@ -310,16 +310,17 @@ def get_rating_by_book_id(book_id):
 def get_book_by_year_and_rating(year, rating):
     if year == '':
         get_book_id_from_rating_sql = "(SELECT DISTINCT book_id from rating t1 WHERE (SELECT AVG(rating) FROM rating WHERE book_id = t1.book_id) >\""+ rating+ "\")"
-        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id)" 
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id)" 
     elif rating == '':
-        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 WHERE b1.published_year > \"" + year + "\")" 
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, image FROM book b1 WHERE b1.published_year > \"" + year + "\")" 
     else:
         get_book_id_from_rating_sql = "(SELECT book_id from rating t1 WHERE (SELECT AVG(rating) WHERE book_id = t1.book_id) >\""+ rating+ "\")"
-        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id WHERE b1.published_year > \"" + year + "\")" 
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id WHERE b1.published_year > \"" + year + "\")" 
     
     
-    get_author_id_as_well = "(SELECT ab.author_id, ab.book_id, b3.title, b3.author, b3.image FROM author__book ab JOIN " + get_book_id_from_year_sql + "b3 ON ab.book_id = b3.book_id)"
+    get_author_id_as_well = "(SELECT ab.author_id, ab.book_id, b3.title, b3.image FROM author__book ab JOIN " + get_book_id_from_year_sql + "b3 ON ab.book_id = b3.book_id)"
     get_author_name_as_well = "SELECT b4.author_id, a1.first_name, a1.last_name, book_id, title, b4.image FROM author a1 JOIN" + get_author_id_as_well + "b4 ON a1.author_id = b4.author_id;"
+    print(get_author_name_as_well)
     db_cursor.execute(get_author_name_as_well)
     checker = []
     for check in db_cursor.fetchall():
@@ -788,13 +789,22 @@ def student_home():
     genre = ''
     if request.method == 'POST':
         genre = request.form.get("genre")
-        results = get_course_by_genre(genre)
-        professors_courses_info = []
-        for result in results:     
-            professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year'], "course_id": result['course_id']})
-  
-    
-        
+        if genre != '':
+            results = get_course_by_genre(genre)
+            print(results)
+            professors_courses_info = []
+            for result in results:     
+                professors_courses_info.append({"prof_name": result['first_name'] + " " + result['last_name'], "course_name": result['course_name'], "course_semester": result['course_semester'], "course_year": result['course_year'], "course_id": result['course_id']})
+        else:
+            results = get_courses()
+            professors_courses_info = []
+            for result in results:
+                professors_courses = get_assigned_professor_course_by_course_id(result['course_id'])
+                for professor_course in professors_courses:
+                    professor = get_professor_by_id(prof_id=professor_course['prof_id'])
+                    course = get_course_by_id(course_id=professor_course['course_id'])
+                    professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], "course_id": course[0]['course_id']})
+             
     return render_template('studentHome.html', Data=professors_courses_info)
 
 
