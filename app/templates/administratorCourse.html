@@ -38,22 +38,21 @@
         
         <section>
             <!-- Student Title Section -->
-            {% for item in Data %}
             <div class="infoTitle">
                 <div class="leftSide">
                     <!-- Job Image and Job Title on the Left Side -->
-                    <img src="data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}" class="Company Logo" />
+                    <img src="data:{{ professorData[0].image.mimetype }};base64,{{ professorData[0].image.image.decode() }}" class="Prof Image" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">{{ item.course_name }}</h1>
+                        <h1 style="margin-top: 0;">{{courseData[0].name}}</h1>
                         <div>
-                            <h4 style="margin: 0;">{{ item.prof_name }}</h4>
-                            <h4 style="margin: 0;">{{ item.course_semester }} {{ item.course_year }}</h4>
+                            <h4 style="margin: 0;">{{professorData[0].first_name + ' ' + professorData[0].last_name}}</h4>
+                            <h4 style="margin: 0;">{{courseData[0].semester + ' ' + courseData[0].year}}</h4>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <a href='/administratorCourseEdit.html/{{ item.course_id }}'><button type="submit" name="edit" class="edit">Edit</button></a> <!-- Applied Button on the Right Side -->
-                    <a href="/deleteCourse/{{ item.course_id }}"><button type="submit" name="delete" class="delete">Delete</button></a>
+                    <a href='/administratorCourseEdit.html/{{ courseData[0].course_id }}'><button type="submit" name="edit" class="edit">Edit</button></a> <!-- Applied Button on the Right Side -->
+                    <a href="/deleteCourse/{{ courseData[0].course_id }}"><button type="submit" name="delete" class="delete">Delete</button></a>
                 </div>
             </div>
             
@@ -70,38 +69,34 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                {{ item.course_summary }}</br>
+                                Course Subject: {{courseData[0].subject}}</br>
+                                {{courseData[0].summary}}
                             </p>
                         </div>
                     </div>
-                    {% endfor %}
-                    {% for item in Author_book_info %}
                     <!-- Books Section -->
                     <div id="BOOKS" data-tab-content>
                         <div class="bookList">
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
-                                
-                                <a class='cardLink generic' href='/administratorBookProfile.html/{{ item.author_books_info[0].book_id }}'>
+                                {% for item in bookData %}
+                                <a class='cardLink generic' href='/professorBookProfile.html/{{item.book_id}}'>
                                     <div class='card'>
                                         <div class='cardImage'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= 'data:{{ item.author_books_info[0].image.mimetype }};base64,{{ item.author_books_info[0].image.image.decode() }}' alt='Book Cover' />
+                                                    <img src= 'data:{{ item.book_image.mimetype }};base64,{{ item.book_image.image.decode() }}' alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>{{ item.author_books_info[0]['book_title']}}</h1>
-                                            <h3>{{ item.author_books_info[0]['author_name']}}</h3>
+                                            <h1>{{item.book_title}}</h1>
+                                            <h3>{{item.author_name}}</h3>
                                         </div>
                                     </div>
                                 </a>
-
-
-
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                     <!-- Statistics Section -->
                     <div id="STATISTICS" data-tab-content>
                         <div class="statisticsInfo">

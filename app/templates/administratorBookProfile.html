@@ -32,18 +32,17 @@
 </nav>
 
 <body>
-    {% for item in Data %}
     <section>
         <!-- Title Section -->
         <div class="Title">
             <div class="leftSide">
                 <!-- Image and Title on the Left Side -->
-                <img src="data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}" class="Book Logo" />
+                <img src="data:{{ Data.image.mimetype }};base64,{{ Data.image.image.decode() }}" class="Book Logo" />
                 <div class="titles">
-                    <h1 style="margin-top: 0;">{{ item.title }}</h1>
+                    <h1 style="margin-top: 0;">{{Data.title}}</h1>
                     <div>
-                        <h4 style="margin: 0;">{{ item.published_year }}</h4>
-                        <h4 style="margin: 0;">{{ item.genre }}</h4>
+                        <h4 style="margin: 0;">{{Data.author_name}}</h4>
+                        <h4 style="margin: 0;">{{Data.published_year}}</h4>
                     </div>
                 </div>
             </div>
@@ -51,7 +50,7 @@
         <!-- Header Section -->
         <div class="Sections">
             <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
-            <rating>ADD STAR RATING HERE</rating>
+            <rating>{{Data.rating}}/5</rating>
         </div>
         <div>
             <div class="content">
@@ -59,14 +58,15 @@
                 <div id="DESCRIPTION" data-tab-content class="active">
                     <div class="descriptionInfo">
                         <p>
-                            {{ item.summary }}
+                            Genre: {{Data.genre}} </br>
+                            {{Data.summary}}
+                            
                         </p>
                     </div>
-                </div>
+                </div>  
             </div>
         </div>
     </section>
-    {% endfor %}
 </body>
 
 </html>

@@ -65,24 +65,21 @@
                     </div>
                 </form>
                 <div class='cardContainer generic'>
-                    {% for item in Author_book_info %}
-                    <a class='cardLink generic' href='/administratorBookProfile.html/{{ item.author_books_info.book_id }}'>
+                    {% for item in Data %}
+                    <a class='cardLink generic' href='/administratorBookProfile.html/{{item.book_id}}'>
                         <div class='card'>
                             <div class='cardImage'>
-                                
+                                <div id = 'information' class = 'middle_part'>
+                                        <img src= 'data:{{ item.image.mimetype }};base64,{{ item.image.image.decode() }}' alt='Book Cover' />
+                                </div>
                             </div>
                             <div class='cardInfo'>
-                                <!--h1>{{ item.author_books_info['book_title']}}</h1-->
-                                <h1>book title</h1>
-                                <!--h3>{{ item.author_books_info['author_name']}}</h3-->
-                                <h3>author name</h3>
+                                <h1>{{item.book_name}}</h1>
+                                <h3>{{item.author_name}}</h3>
                             </div>
                         </div>
-                        {% endfor %}
                     </a>
-                    
-                       
-
+                    {% endfor %}
                 </div>
             </div>
         </section>
