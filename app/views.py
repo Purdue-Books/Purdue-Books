@@ -913,7 +913,8 @@ def student_professors_profile(id):
 @views.route('/administratorProfile.html', methods=['GET', 'POST'])
 @login_required
 def admin_profile():
-    if request.method == 'POST':
+    result = get_administrator_by_id(current_user.get_id())
+    if request.method == 'POST' and len(result) == 0:
         sch_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
@@ -922,10 +923,21 @@ def admin_profile():
             sch_id=sch_id, first_name=firstname, last_name=lastname, email=email)
         database.session.add(new_admin)
         database.session.commit()
-        return redirect(url_for('views.admin_home'))
-    result = get_administrator_by_id(current_user.get_id())
+        return redirect(url_for('views.admin_home'))   
     if len(result) == 0:
         result.append({"sch_id": "", "first_name": "", "last_name": "", "email": ""})
+    if request.method == 'POST' and len(result) == 1:
+        sch_id = current_user.get_id()
+        first_name = request.form.get('firstname')
+        last_name = request.form.get('lastname')
+        email = request.form.get('email')
+        school_administrator = School_Administrator.query.filter_by(sch_id=result[0].get('sch_id')).first()
+        school_administrator.first_name = first_name
+        school_administrator.last_name = last_name
+        school_administrator.email = email
+        database.session.commit() 
+        database.session.flush()
+        return redirect(url_for('views.admin_home')) 
     return render_template('administratorProfile.html', Administrator=result[0])
 
 
