@@ -430,6 +430,9 @@ def create_course():
         prof_course = Assigned_Professor_Course(prof_id = professor, sch_id = current_user.get_id(), course_id=course_id)
         database.session.add(prof_course)
         database.session.commit()
+        return redirect(url_for('views.admin_home'))
+    '''
+    else:
         professors_courses = get_assigned_professor_course()
         professors_courses_info = []
         for professor_course in professors_courses:
@@ -439,7 +442,7 @@ def create_course():
             professors_courses_info.append({"prof_name": professor[0]['first_name'] + " " + professor[0]['last_name'], 
             "course_name": course[0]['name'], "course_semester": course[0]['semester'], "course_year": course[0]['year'], 
             "course_id": course[0]['course_id'], "books": books})
-        return redirect(url_for('views.admin_home'))
+    '''
     professors = get_professors();   
     return render_template('administratorCourseCreation.html', Data=professors)
 
