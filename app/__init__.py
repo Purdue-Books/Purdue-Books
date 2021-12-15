@@ -13,7 +13,7 @@ def create_app():
     app.config['SECRET KEY'] = 'Purdue Books Secret Key'
     app.config['SQLALCHEMY_DATABASE_URI'] = connector
     database.init_app(app)
-
+    database.session.execute(@SetIsolationLevel)
     from .views import views
 
     app.register_blueprint(views, url_prefix = '/')
