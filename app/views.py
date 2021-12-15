@@ -938,6 +938,7 @@ def admin_profile():
     return render_template('administratorProfile.html', Administrator=result[0])
 
 
+
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
 @login_required
 def author_profile():
