@@ -300,12 +300,71 @@ def get_rating_by_book_id(book_id):
         checker.append({"average": check[0]})
     return checker
 
+def get_book_by_year_and_rating(year, rating):
+    if year == '':
+        get_book_id_from_rating_sql = "(SELECT DISTINCT book_id from rating t1 WHERE (SELECT AVG(rating) FROM rating WHERE book_id = t1.book_id) >\""+ rating+ "\")"
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id)" 
+    elif rating == '':
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 WHERE b1.published_year > \"" + year + "\")" 
+    else:
+        get_book_id_from_rating_sql = "(SELECT book_id from rating t1 WHERE (SELECT AVG(rating) WHERE book_id = t1.book_id) >\""+ rating+ "\")"
+        get_book_id_from_year_sql = "(SELECT b1.book_id, title, author, image FROM book b1 JOIN "+get_book_id_from_rating_sql +" b2 ON b1.book_id = b2.book_id WHERE b1.published_year > \"" + year + "\")" 
+    
+    
+    get_author_id_as_well = "(SELECT ab.author_id, ab.book_id, b3.title, b3.author, b3.image FROM author__book ab JOIN " + get_book_id_from_year_sql + "b3 ON ab.book_id = b3.book_id)"
+    get_author_name_as_well = "SELECT b4.author_id, a1.first_name, a1.last_name, book_id, title, b4.image FROM author a1 JOIN" + get_author_id_as_well + "b4 ON a1.author_id = b4.author_id;"
+    db_cursor.execute(get_author_name_as_well)
+    checker = []
+    for check in db_cursor.fetchall():
+        image = Image.query.filter_by(image_id=check[5]).first()
+        checker.append({"author_id": check[0], "author_name": check[1] + check[2], "book_id": check[3], "book_name": check[4], "image": image})
+    return checker
+
+def check_professor_exists():
+    userValid = len(get_professor_by_id(current_user.get_id()))
+    role_type_sql = "SELECT * FROM user WHERE username = \"" + current_user.get_id() + "\" AND role = \"professor\";"
+    db_cursor.execute(role_type_sql)
+    userRoleValid = len(db_cursor.fetchall())
+    if userRoleValid == 1:
+        if userValid == 0:
+            return 0
+    else:
+        return 1
+
+def check_student_exists():
+    userValid = len(get_student_by_id(current_user.get_id()))
+    role_type_sql = "SELECT * FROM user WHERE username = \"" + current_user.get_id() + "\" AND role = \"student\";"
+    db_cursor.execute(role_type_sql)
+    userRoleValid = len(db_cursor.fetchall())
+    if userRoleValid == 1:
+        if userValid == 0:
+            return 0
+    else:
+        return 1
+
+def check_author_exists():
+    userValid = len(get_author_by_id(current_user.get_id()))
+    role_type_sql = "SELECT * FROM user WHERE username = \"" + current_user.get_id() + "\" AND role = \"author\";"
+    db_cursor.execute(role_type_sql)
+    userRoleValid = len(db_cursor.fetchall())
+    if userRoleValid == 1:
+        if userValid == 0:
+            return 0
+    else:
+        return 1
+            
+
 
 views = Blueprint('views', __name__)
 
 @login_required
 @views.route('/authorBookCreation.html', methods=['POST', 'GET'])
 def create_book():
+    if check_author_exists() == 0:
+        return redirect(url_for('views.author_profile'))
+    elif check_author_exists() == 1:
+        return redirect(url_for('views.login'))
+
     if request.method == 'POST':
         book_id = uuid.uuid1()
         title = request.form.get("title")
@@ -406,9 +465,13 @@ def administrator_book_profile(id):
     result = get_book_by_id(book_id=id)
     return render_template('/administratorBookProfile.html', Data=result)
 
-@views.route('/professorBookProfile.html/<string:id>', methods=['POST', 'GET'])
+@views.route('/professorBookProfile.html/<string:id>')
 @login_required
 def professor_book_profile(id):
+    if check_professor_exists() == 0:
+        return redirect(url_for('views.professor_profile'))
+    elif check_professor_exists() == 1:
+        return redirect(url_for('views.login'))
     books = get_book_by_id(id)
     sendData = []
     for book in books:
@@ -417,31 +480,110 @@ def professor_book_profile(id):
         sendData = [{"book_id": book['book_id'], "author_name": author[0]['author_name'], "title": book['title'], "published_year": book['published_year'], "summary": book['summary'], "genre": book['genre'], "image": book['image'], "rating": rating[0]['average']}]
     return render_template('professorBookProfile.html', Data = sendData[0])
 
+@views.route('/professorAddRemoveBooks.html/<string:id>', methods=['POST', 'GET'])
+@login_required
+def professor_add_remove_books(id):
+    if check_professor_exists() == 0:
+        return redirect(url_for('views.professor_profile'))
+    elif check_professor_exists() == 1:
+        return redirect(url_for('views.login'))
+    addBooksFromList = [] #from user input
+    removeBooksFromList = [] #from user input
+    if request.method == 'POST':
+        addBooksFromList = request.form.getlist('addBooks')
+        removeBooksFromList = request.form.getlist('removeBooks')
+        
+        #Add Books
+        for addBook in addBooksFromList:
+            new_request = Book_Professor_Course(prof_id=current_user.get_id(), book_id = addBook, course_id = id)
+            database.session.add(new_request)
+            database.session.commit()
+
+        #Remove Books
+        for removeBook in removeBooksFromList:
+            Book_Professor_Course.query.filter_by(prof_id = current_user.get_id(), course_id = id, book_id = removeBook).delete()
+            database.session.commit()
+            database.session.flush()
+
+        
+        return redirect(url_for('views.professor_home'))
+            
+    addBooks = [] #for the form display
+    removeBooks =[] #for the form display
+
+    results = get_book_professor_course(id, current_user.get_id())
+    for result in results:
+        rBooks = get_book_by_id(result['book_id'])
+        for rBook in rBooks:
+            removeBooks.append({"book_id": rBook['book_id'], "title": rBook['title']})
+    
+    books = get_books()
+    for book in books:
+        addBooks.append({"book_id": book['book_id'],"title": book['title']})
+
+    for book in addBooks:
+        if book in removeBooks:
+            addBooks.remove(book)
+
+        
+    return render_template('professorAddRemoveBooks.html', addBooksList = addBooks, removeBooksList = removeBooks)
+
+
 @views.route('/professorCourse.html/<string:id>')
 @login_required
 def professor_book_course(id):
+    if check_professor_exists() == 0:
+        return redirect(url_for('views.professor_profile'))
+    elif check_professor_exists() == 1:
+        return redirect(url_for('views.login'))
     courses = get_course_by_id(id)
     professors = get_professor_by_course_id(id)
     books = get_book_professor_course(courses[0]['course_id'], professors[0]['prof_id'])
     bookList = []
     for book in books:
-        bookList.append(get_book_by_id(book['book_id']))
+        bookinfos = get_book_by_id(book['book_id'])
+        for bookinfo in bookinfos:
+            authorinfos = get_author_by_book_id(bookinfo['book_id'])
+            for author in authorinfos:
+                bookList.append({"book_id": bookinfo['book_id'], "book_image": bookinfo['image'], "book_title": bookinfo['title'],"author_name": author['author_name']})
     return render_template('professorCourse.html', courseData = courses, professorData = professors, bookData = bookList)
 
 @views.route('/professorBooks.html', methods=['POST', 'GET'])
 @login_required
 def professor_books():
-    results = get_books()
+    if check_professor_exists() == 0:
+        return redirect(url_for('views.professor_profile'))
+    elif check_professor_exists() == 1:
+        return redirect(url_for('views.login'))
     sendData = []
-    for result in results:
-        author_info = get_author_by_book_id(result['book_id'])
-        for author in author_info:
-            sendData.append({"book_id": result['book_id'], "book_name": result['title'], "author_name": author['author_name'], "image": result['image']})
+    if request.method == 'POST':
+        rating = request.form.get("rating")
+        year = request.form.get("year")
+        if year != '' or rating != '':
+            sendData = get_book_by_year_and_rating(year, rating)
+        else:
+            results = get_books()
+            for result in results:
+                author_info = get_author_by_book_id(result['book_id'])
+                for author in author_info:
+                    sendData.append({"book_id": result['book_id'], "book_name": result['title'], "author_name": author['author_name'], "image": result['image']}) 
+    else:
+        results = get_books()
+        for result in results:
+            author_info = get_author_by_book_id(result['book_id'])
+            for author in author_info:
+                sendData.append({"book_id": result['book_id'], "book_name": result['title'], "author_name": author['author_name'], "image": result['image']})
+    
     return render_template('professorBooks.html', Data = sendData)
 
 @views.route('/authorBookEdit.html/<string:id>', methods=['POST', 'GET'])
 @login_required
 def edit_book(id):
+    if check_author_exists() == 0:
+        return redirect(url_for('views.author_profile'))
+    elif check_author_exists() == 1:
+        return redirect(url_for('views.login'))
+    
     if request.method == 'POST':
         result = get_book_by_id(id)
         title = request.form.get("title")
@@ -544,18 +686,31 @@ def admin_home():
 @views.route('/authorHome.html')
 @login_required
 def author_home():
+    if check_author_exists() == 0:
+        return redirect(url_for('views.author_profile'))
+    elif check_author_exists() == 1:
+        return redirect(url_for('views.login'))
     result = get_books_by_author(author_id=current_user.get_id())
     return render_template('authorHome.html', Data=result)
 
 @views.route('/authorBookProfile.html/<string:id>')
 @login_required
 def author_book_profile(id):
+    if check_author_exists() == 0:
+        return redirect(url_for('views.author_profile'))
+    elif check_author_exists() == 1:
+        return redirect(url_for('views.login'))
     result = get_book_by_id(book_id=id)
-    return render_template('/authorBookProfile.html', Data=result)
+    return render_template('authorBookProfile.html', Data=result)
 
 @views.route('/professorHome.html')
 @login_required
 def professor_home():
+    if check_professor_exists() == 0:
+        return redirect(url_for('views.professor_profile'))
+    elif check_professor_exists() == 1:
+        return redirect(url_for('views.login'))
+
     results = get_assigned_professor_course_by_prof_id(current_user.get_id())
     sendData = []
     for result in results:
@@ -569,6 +724,10 @@ def professor_home():
 @views.route('/studentHome.html/', methods=['POST', 'GET'])
 @login_required
 def student_home():
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     results = get_courses()
     professors_courses_info = []
     for result in results:
@@ -595,6 +754,10 @@ def student_home():
 @views.route('/studentBookmarks.html/')
 @login_required
 def student_bookmarks():
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     courses = get_course_by_student_id(current_user.get_id())
     professors_courses_info = []
     for course in courses:
@@ -606,6 +769,10 @@ def student_bookmarks():
 @views.route('/studentBookProfile.html/<string:id>', methods=['POST', 'GET'])
 @login_required
 def student_book_profile(id):
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     bookResult = get_book_by_id(book_id=id)
     authorId = get_author_by_book_id(book_id=id)
     authorResult = get_author_by_id(authorId[0]['author_id'])
@@ -633,6 +800,10 @@ def student_book_profile(id):
 @views.route('/studentClassesPage.html/<string:id>', methods=['GET', 'POST'])
 @login_required
 def student_classes_page(id):
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     professors_courses = get_assigned_professor_course_by_course_id(id)
     professors_courses_info = []
     for professor_course in professors_courses:
@@ -667,6 +838,10 @@ def student_classes_page(id):
 @views.route('/studentProfessors.html/', methods=['POST', 'GET'])
 @login_required
 def student_professors():
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     result = get_professors()
     if request.method == 'POST':
         genre = request.form.get("genre")
@@ -680,6 +855,10 @@ def student_professors():
 @views.route('/studentProfessorProfile.html/')
 @login_required
 def student_professors_profile(id):
+    if check_student_exists() == 0:
+        return redirect(url_for('views.student_profile'))
+    elif check_student_exists() == 1:
+        return redirect(url_for('views.login'))
     result = get_professor_by_id(id)
     return render_template('studentProfessorProfile.html', Data=result)
 
@@ -706,7 +885,6 @@ def admin_profile():
 @views.route('/authorProfile.html', methods=['GET', 'POST'])
 @login_required
 def author_profile():
-    none = 1
     if request.method == 'POST':
         prof_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -731,8 +909,7 @@ def author_profile():
     result = get_author_by_id(current_user.get_id())
     if len(result) == 0:
         result.append({"author_id": "", "first_name": "", "last_name": "", "email": "", "biography": "", "image": ""})
-        none = 0
-    return render_template('authorProfile.html', Author=result[0], test = none)
+    return render_template('authorProfile.html', Author=result[0])
 
 
 @views.route('/professorProfile.html', methods=['GET', 'POST'])
@@ -768,7 +945,6 @@ def professor_profile():
 @views.route('/studentProfile.html/', methods=['GET', 'POST'])
 @login_required
 def student_profile():
-    none = 0
     result = get_student_by_id(current_user.get_id())
     if request.method == 'POST' and len(result) == 0:
         stud_id = current_user.get_id()
@@ -783,7 +959,7 @@ def student_profile():
         database.session.commit()
         return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        return render_template('studentProfile.html', studentData = '', test = none)
+        return render_template('studentProfile.html', studentData = '')
     if request.method == 'POST' and len(result) == 1:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
@@ -800,9 +976,7 @@ def student_profile():
         database.session.commit() 
         database.session.flush()
         return redirect(url_for('views.student_home'))
-    
-    none = 1
-    return render_template('studentProfile.html', studentData = result[0], test = none)
+    return render_template('studentProfile.html', studentData = result[0])
 
 def get_student_by_id(student_id):
     get_student_by_id_sql = "SELECT * FROM student b WHERE b.stud_id = \"" + student_id + "\";"

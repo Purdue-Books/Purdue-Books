@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div>
-                    <a href='professorAddRemoveBooks.html'>
+                    <a href='/professorAddRemoveBooks.html/{{courseData[0].course_id}}'>
                         <button type="submit" name="addOrRemove" class="addOrRemove">Add/Remove Books</button>
                     </a> <!-- Applied Button on the Right Side -->
                 </div>
@@ -68,7 +68,6 @@
                             <p>
                                 Course Subject: {{courseData[0].subject}}</br>
                                 {{courseData[0].summary}}
-                                {{bookData}}
                             </p>
                         </div>
                     </div>
@@ -77,36 +76,21 @@
                         <div class="bookList">
                             <h3>Books</h3>
                             <div class="cardContainer accepted">
-                                
-                                <a class='cardLink generic' href='professorBookProfile.html'>
+                                {% for item in bookData %}
+                                <a class='cardLink generic' href='/professorBookProfile.html/{{item.book_id}}'>
                                     <div class='card'>
                                         <div class='cardImage'>
                                             <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
+                                                    <img src= 'data:{{ item.book_image.mimetype }};base64,{{ item.book_image.image.decode() }}' alt='Book Cover' />
                                             </div>
                                         </div>
                                         <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
+                                            <h1>{{item.book_title}}</h1>
+                                            <h3>{{item.author_name}}</h3>
                                         </div>
                                     </div>
                                 </a>
-
-                                <a class='cardLink generic' href='professorBookProfile.html'>
-                                    <div class='card'>
-                                        <div class='cardImage'>
-                                            <div id = 'information' class = 'middle_part'>
-                                                    <img src= '../img/sample.jpg' alt='Book Cover' />
-                                            </div>
-                                        </div>
-                                        <div class='cardInfo'>
-                                            <h1>Book Name</h1>
-                                            <h3>Author Name</h3>
-                                        </div>
-                                    </div>
-                                </a>
-
-
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
