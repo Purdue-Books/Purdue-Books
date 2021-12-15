@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import pymysql
 from . import db
 from flask_login import LoginManager, login_manager
+from sqlalchemy.engine import create_engine
 
 database = SQLAlchemy()
 
@@ -13,7 +14,7 @@ def create_app():
     app.config['SECRET KEY'] = 'Purdue Books Secret Key'
     app.config['SQLALCHEMY_DATABASE_URI'] = connector
     database.init_app(app)
-
+    database.session.execute('set transaction isolation level serializable')
     from .views import views
 
     app.register_blueprint(views, url_prefix = '/')
