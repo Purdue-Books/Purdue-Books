@@ -24,7 +24,7 @@ except connector.Error as err:
 
 db_cursor = db_connection.cursor(buffered=True)
 prep_cursor = db_connection.cursor(prepared=True)
-db_cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
+db_cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
 db_cursor.execute("USE Purdue_Books")
 
 
