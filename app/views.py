@@ -1032,37 +1032,32 @@ def professor_profile():
 @login_required
 def student_profile():
     result = get_student_by_id(current_user.get_id())
-    if request.method == 'POST' and len(result) == 0:
+    if request.method == 'POST':
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
         lastname = request.form.get('lastname')
         major = request.form.get('major')
         email = request.form.get('email')
         gradeyear = request.form.get('gradeyear')
-        new_stud = Student(stud_id=stud_id, first_name=firstname,
-                           last_name=lastname, major=major, email=email, grade_year=gradeyear)
-        database.session.add(new_stud)
-        database.session.commit()
+
+        if len(result) == 0:
+            new_stud = Student(stud_id=stud_id, first_name=firstname, last_name=lastname, major=major, email=email, grade_year=gradeyear)
+            database.session.add(new_stud)
+            database.session.commit()
+
+        if (len(result) == 1):
+            student = Student.query.filter_by(stud_id=result[0].get('stud_id')).first()
+            student.first_name = firstname
+            student.last_name = lastname
+            student.major = major
+            student.email = email
+            student.grade_year = gradeyear
+            database.session.commit()
+            database.session.flush()
         return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        result = get_student_by_id(current_user.get_id())
-    if request.method == 'POST' and len(result) == 1:
-        stud_id = current_user.get_id()
-        firstname = request.form.get("firstname")
-        lastname = request.form.get('lastname')
-        major = request.form.get('major')
-        email = request.form.get('email')
-        gradeyear = request.form.get('gradeyear')
-        student = Student.query.filter_by(stud_id=result[0].get('stud_id')).first()
-        student.first_name = firstname
-        student.last_name = lastname
-        student.major = major
-        student.email = email
-        student.grade_year = gradeyear
-        database.session.commit() 
-        database.session.flush()
-        return redirect(url_for('views.student_home'))
-    return render_template('studentProfile.html', studentData = result[0])
+        result.append({"stud_id": "", "first_name": "", "last_name": "", "major": "", "email": "", "grade_year": ""})
+    return render_template('studentProfile.html', studentData=result[0])
 
 def get_student_by_id(student_id):
     get_student_by_id_sql = "SELECT * FROM student b WHERE b.stud_id = \"" + student_id + "\";"
