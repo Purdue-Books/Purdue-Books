@@ -45,12 +45,12 @@
             <div class="Title">
                 <div class="leftSide">
                     <!-- Image and Title on the Left Side -->
-                    <img src="data:{{ Book[0].image.mimetype }};base64,{{ Book[0].image.image.decode() }}" class="Book Logo" />
+                    <img src="data:{{ Book.image.mimetype }};base64,{{ Book.image.image.decode() }}" class="Book Logo" />
                     <div class="titles">
-                        <h1 style="margin-top: 0;">{{ Book[0].title }}</h1>
+                        <h1 style="margin-top: 0;">{{ Book.title }}</h1>
                         <div>
                             <h4 style="margin: 0;">{{ Author[0].first_name + ' ' + Author[0].last_name}}</h4>
-                            <h4 style="margin: 0;">{{ Book[0].published_year }}</h4>
+                            <h4 style="margin: 0;">{{ Book.published_year }}</h4>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                 <a data-tab-target="#DESCRIPTION" class="active tab">DESCRIPTION</a>
                 <a data-tab-target="#AUTHOR" class="tab">AUTHOR</a>
 
-                <rating>ADD STAR RATING HERE</rating>
+                <rating>{{Book.rating}}/5</rating>
             </div>
             <div>
                 <div class="content">
@@ -82,8 +82,8 @@
                         <div class="descriptionInfo">
                             <h3>Description</h3>
                             <p>
-                                Genre: {{Book[0].genre}} <br/>
-                                {{ Book[0].summary }}
+                                Genre: {{Book.genre}} <br/>
+                                {{ Book.summary }}
                             </p>
                         </div>
                     </div>

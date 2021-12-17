@@ -747,8 +747,13 @@ def author_book_profile(id):
         return redirect(url_for('views.author_profile'))
     elif check_author_exists() == 1:
         return redirect(url_for('views.login'))
-    result = get_book_by_id(book_id=id)
-    return render_template('authorBookProfile.html', Data=result)
+    books = get_book_by_id(id)
+    sendData = []
+    for book in books:
+        rating = get_rating_by_book_id(book['book_id'])
+        author = get_author_by_book_id(book['book_id'])
+        sendData = [{"book_id": book['book_id'], "author_name": author[0]['author_name'], "title": book['title'], "published_year": book['published_year'], "summary": book['summary'], "genre": book['genre'], "image": book['image'], "rating": rating[0]['average']}]
+    return render_template('authorBookProfile.html', Data=sendData[0])
 
 @views.route('/professorHome.html')
 @login_required
@@ -820,7 +825,12 @@ def student_book_profile(id):
         return redirect(url_for('views.student_profile'))
     elif check_student_exists() == 1:
         return redirect(url_for('views.login'))
-    bookResult = get_book_by_id(book_id=id)
+    books = get_book_by_id(id)
+    sendData = []
+    for book in books:
+        rating = get_rating_by_book_id(book['book_id'])
+        author = get_author_by_book_id(book['book_id'])
+        sendData = [{"book_id": book['book_id'], "author_name": author[0]['author_name'], "title": book['title'], "published_year": book['published_year'], "summary": book['summary'], "genre": book['genre'], "image": book['image'], "rating": rating[0]['average']}]
     authorId = get_author_by_book_id(book_id=id)
     authorResult = get_author_by_id(authorId[0]['author_id'])
     amount = ''
@@ -842,7 +852,7 @@ def student_book_profile(id):
                 database.session.commit()
                 return redirect(url_for('views.student_home'))
     
-    return render_template('studentBookProfile.html', Book=bookResult, Author=authorResult)
+    return render_template('studentBookProfile.html', Book=sendData[0], Author=authorResult)
 
 @views.route('/studentClassesPage.html/<string:id>', methods=['GET', 'POST'])
 @login_required
