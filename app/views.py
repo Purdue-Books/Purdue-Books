@@ -1045,7 +1045,7 @@ def student_profile():
         database.session.commit()
         return redirect(url_for('views.student_home'))
     if len(result) == 0:
-        result = get_professor_by_id(current_user.get_id())
+        result = get_student_by_id(current_user.get_id())
     if request.method == 'POST' and len(result) == 1:
         stud_id = current_user.get_id()
         firstname = request.form.get("firstname")
